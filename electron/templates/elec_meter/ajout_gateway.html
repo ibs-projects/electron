@@ -1,0 +1,98 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Ajout d'une gateway - Interactiv {% endblock %}
+{% block page %}Gateway {% endblock %}
+{% block titre %} Enregistrer gateway {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header pb-0">
+					<h3 class="card-title">Enregistrement d'une gateway</h3>
+				</div>
+				<div>
+					{% if messages %}
+						<ul class="messages">
+							{% for message in messages %}
+								<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+						</ul>
+                	{% endif %}
+				</div>
+				<div class="card-body">
+					{% if error == 'yes' %}
+						<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+						</button>
+							{{form.errors.num_gw}}
+						</div>
+					{% endif %}
+
+					<form action="" method="post">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-xl-12">
+							<div class="form-group">
+								<label class="form-label">{{form.num_gw.label_tag}}</label>
+								{{form.num_gw}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">{{form.nom_gw.label_tag}}</label>
+								{{form.nom_gw}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">Ville du client</label>
+								<select name="ville_gw" id="ville_gw" class="form-control custom-select">
+									{% for ville in villes %}
+										<option value="{{ville.id}}">{{ville.nom_ville}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="form-label">{{form.adr_gw.label_tag}}</label>
+								{{form.adr_gw}}
+							</div>
+
+							<div class="form-group">
+								<label class="form-label">{{form.latitude.label_tag}}</label>
+								{{form.latitude}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">{{form.longitude.label_tag}}</label>
+								{{form.longitude}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">{{form.desc_gw.label_tag}}</label>
+								{{form.desc_gw}}
+							</div>
+						</div>
+						</div>
+						<div style="margin-top:10px;">
+                        <div class="btn-list text-center">
+                            <button class="btn btn-primary" id="enrgGateway" type="submit">Enregistrer</button>
+                        </div>
+                    </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+{% block js %}
+	<script src="{% static 'assets/js/advancedform.js' %}"></script>
+	<script src="{% static 'assets/plugins/formwizard/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'assets/plugins/formwizard/fromwizard.js' %}"></script>
+
+    <!--Accordion-Wizard-Form js-->
+    <script src="{% static 'assets/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js' %}"></script>
+	<script>
+		$(document).ready(function(){
+			$("#id_num_gw").on("input",function(){
+				var val = $("#id_num_gw").val();
+				$("#id_nom_gw").val("elec_gw_"+val);
+			});
+		});
+	</script>
+{% endblock %}
+

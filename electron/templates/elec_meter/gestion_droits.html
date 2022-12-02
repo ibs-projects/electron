@@ -1,0 +1,122 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Gestion des droits utilisateurs - Interactiv {% endblock %}
+{% block page %}<a href="{% url 'elec_meter:liste_agents' %}">Utilisateurs</a> {% endblock %}
+{% block titre %} Gestion des droits utilisateurs {% endblock %}
+{% block add %}{% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header pb-0">
+            <div class="card-title">Utilisateurs</div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="input-datatable" class="table table-striped table-bordered w-100 text-nowrap display">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prénom</th>
+                            <th>Email</th>
+                            <th>Profile</th>
+                            <th>Etat</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for agent in agents%}
+                            <tr>
+                                <td>{{agent.nom_agent}}</td>
+                                <td>{{agent.prenom_agent}}</td>
+                                <td>{{agent.user.email}}</td>
+                                <td><select size="1" id="row-1-office" name="row-1-office" class="form-control ">
+                                    {% for p in profiles %}
+                                        <option value="{{p}}" user="{{agent.id}}" {% if agent.profile == p %}selected="selected"{% endif %}>
+                                            {{p}}
+                                        </option>
+                                    {% endfor %}
+                                </select></td>
+                                <td>
+                                    <div class="custom-checkbox custom-control">
+                                        {% if agent.user.is_active %}
+                                            <input type="checkbox" checked data-checkboxes="mygroup" class="activite custom-control-input" etat="actif" id="checkbox-{{agent.id}}">
+                                            <label for="checkbox-{{agent.id}}" class="custom-control-label">Actif</label>
+                                        {% else %}
+                                            <input type="checkbox" data-checkboxes="mygroup" class="activite custom-control-input" etat="inactif" id="checkbox-{{agent.id}}">
+                                            <label for="checkbox-{{agent.id}}" class="custom-control-label">Inactif</label>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot >
+                        <tr>
+                            <th class="border-bottom-0">Nom</th>
+                            <th class="border-bottom-0">Prénom</th>
+                            <th class="border-bottom-0">Email</th>
+                            <th class="border-bottom-0">Profile</th>
+                            <th class="border-bottom-0">Etat</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+	<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap4.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/datatable-2.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded",() => {
+            var checkbox = document.querySelectorAll(".activite");
+            checkbox.forEach(item => {
+                item.addEventListener("click", () => {
+                        $.ajax({
+                            type: "post",
+                            url: "{% url 'elec_meter:changer_etat_activite' %}",
+                            data: {
+                                "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                                "element":item.id,
+                                "etat":item.etat
+                            },
+                            success: function(){document.location.reload();},
+                            error: function(){alert("Erreue ajax")}
+                        });
+                });
+            });
+            var sel = document.getElementById("row-1-office");
+            sel.addEventListener("change", () => {
+                var opt = sel.options[sel.selectedIndex];
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'elec_meter:modifier_profile_agent' %}",
+                    data: {
+                        "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                        "profile": opt.value,
+                        "user": opt.getAttribute("user")
+                    },
+                    success: function(){document.location.reload();},
+                    error: function(){alert("Erreur ajax !");}
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+

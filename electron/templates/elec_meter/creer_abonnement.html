@@ -1,0 +1,92 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Nouvel abonnement {% endblock %}
+{% block page %}Clients {% endblock %}
+{% block titre %} Nouvel abonnement {% endblock %}
+{% block add %}{% endblock %}
+{% block link %}
+    <link href = "https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel = "stylesheet">
+      <script src = "https://code.jquery.com/jquery-1.10.2.js"></script>
+      <script src = "https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <p id="param" style="display:none;">{{param}}</p>
+            <div style="text-align:center;" class="card">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <form action="" method="post" id="formID">
+                    {% csrf_token %}
+                    <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {{form.numero_client}}
+                            </div>
+                            <div class="form-group">
+                                {{form.numero_compteur}}
+                            </div>
+                            <div class="form-group">
+                                {{form.adresse}}
+                            </div>
+                            <div class="form-group">
+                                {{form.pointservice}}
+                            </div>
+                            <div class="form-group">
+                                {{form.latitude}}
+                            </div>
+                            <div class="form-group">
+                                {{form.longitude}}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top:15px;">
+                        <div class="btn-list text-center">
+                            <button class="btn btn-primary" id="enrgMachine" type="submit">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'assets/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $("#id_numero_client").autocomplete({
+                source: "{% url 'elec_meter:code_client_autocomplete' %}"
+            });
+
+            $("#id_numero_compteur").autocomplete({
+                source: "{% url 'elec_meter:deveui_autocomplete' %}"
+            });
+        });
+    </script>
+    <script>
+        $(document).ready( function(){
+            if($("#param").text()=="compteur"){
+                document.getElementById("id_numero_compteur").readOnly = true;
+            }else{
+                if($("#param").text()=="client"){
+                    document.getElementById("id_numero_client").readOnly = true;
+                }
+            }
+        });
+    </script>
+    <script>
+		$(document).ready(function() {
+			$("#menuClients").addClass('active');
+		});
+	</script>
+{% endblock %}
+

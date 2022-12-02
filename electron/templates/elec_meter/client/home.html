@@ -1,0 +1,159 @@
+{% extends "elec_meter/client/base.html" %}
+{% block page %}Accueil{% endblock %}
+{% block titre %}Tableau de bord du compteur {{devEUI}}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header pb-0">
+                    <h3 class="card-title mb-0">Manager le compteur</h3>
+                </div>
+                <div class="card-body">
+                    <a class="btn btn-app btn-primary mr-2 mt-1 mb-1" data-toggle="modal" data-target="#rechargerCompteur">
+                        <i class="fa fa-edit"></i>Charger unités
+                    </a>
+                    <a class="btn btn-app btn-secondary mr-2 mt-1 mb-1" data-toggle="modal" data-target="#transfertCredit">
+                        <i class="fa fa-play"></i> Transferer unités
+                    </a>
+                    <a class="btn btn-app btn-info mr-2 mt-1 mb-1">
+                        <i class="fe fe-plus"></i> Voir les détails
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cards">
+        <div class="col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card overflow-hidden">
+                <div class="card-header pb-0">
+                    <h5 class="card-title">Unités</h5>
+                    <div class="card-options">
+                        <a href="#" class="btn btn-primary">Plus</a>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <h5>Conso hebdomadaire</h5>
+                    <h3 class="text-dark count mt-0 font-30">300</h3>
+                    <div class=""><i class="fa fa-caret-up text-green"></i>10% croissance</div>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class=" col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card overflow-hidden">
+                <div class="card-header pb-0">
+                    <h3 class="card-title">Tension</h3>
+                    <div class="card-options">
+                        <a class="btn btn-sm btn-secondary" href="#">PLus</a>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <h5 class="">Conso hebdomadaire</h5>
+                    <h3 class="text-dark count mt-0 font-30">{{donnees.voltage}}</h3>
+                    <div class=""><i class="fa fa-caret-down text-danger"></i>12% decroissance</div>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class=" col-sm-12 col-md-6 col-lg-6 col-xl-3">
+            <div class="card overflow-hidden">
+                <div class="card-header pb-0">
+                    <h3 class="card-title">Courant</h3>
+                    <div class="card-options">
+                        <a class="btn btn-sm btn-warning" href="#">Plus</a>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <h5 class="">Conso hebdomadaire</h5>
+                    <h3 class="text-dark count mt-0 font-30">{{donnees.current}}</h3>
+                    <div class=""><i class="fa fa-caret-down text-danger"></i>5% croissance</div>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class=" col-sm-12 col-md-6  col-lg-6 col-xl-3">
+            <div class="card overflow-hidden">
+                <div class="card-header pb-0">
+                    <h3 class="card-title">Puissance</h3>
+                    <div class="card-options">
+                        <a class="btn btn-sm btn-success" href="#">Plus</a>
+                    </div>
+                </div>
+                <div class="card-body ">
+                    <h5 class="">Conso hebdomadaire</h5>
+                    <h3 class="text-dark count mt-0 font-30 ">5,759</h3>
+                    <div class=""><i class="fa fa-caret-up text-success"></i>15% croissance</div>
+                </div>
+            </div>
+        </div><!-- col end -->
+    </div>
+    <div class="row">
+        <div class="col-xxl-3">
+        <div class="card overflow-hidden">
+            <div class="card-header custom-header">
+                <div>
+                    <h6 class="card-title">Contacts</h6>
+                </div>
+                <div class="card-options">
+                    <a href="" class="mr-4 text-default" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+                        <span class="fa fa-ellipsis-v"></span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                        <li><a href="#"><i class="si si-plus mr-2"></i>Voir plus</a></li>
+                        <li><a href="#"><i class="si si-trash mr-2"></i>Remove</a></li>
+                        <li><a href="#"><i class="si si-eye mr-2"></i>View</a></li>
+                        <li><a href="#"><i class="si si-settings mr-2"></i>More</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush ">
+                    <div class="list-group-item d-flex  align-items-center">
+                        <div class="">
+                            <div class="font-weight-semibold">Unités consomés</div>
+                        </div>
+                        <div class="ml-auto">
+                            300
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush ">
+                    <div class="list-group-item d-flex  align-items-center">
+                        <div class="">
+                            <div class="font-weight-semibold">Tension</div>
+                        </div>
+                        <div class="ml-auto">
+                            {{donnees.voltage}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush ">
+                    <div class="list-group-item d-flex  align-items-center">
+                        <div class="">
+                            <div class="font-weight-semibold">Courant</div>
+                        </div>
+                        <div class="ml-auto">
+                            {{donnees.current}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush ">
+                    <div class="list-group-item d-flex  align-items-center">
+                        <div class="">
+                            <div class="font-weight-semibold">Puissance active</div>
+                        </div>
+                        <div class="ml-auto">
+                            0124
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

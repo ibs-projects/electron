@@ -1,0 +1,197 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Editer profile {{utilisateur.nom_agent}} - Interactiv {% endblock %}
+{% block page %}Editer profile {{agent.nom_agent}} {% endblock %}
+{% block titre %} {{utilisateur.nom_agent}} {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 col-xl-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Modifier profile</h3>
+                </div>
+                <div class="card-body">
+                    <form action="" id="myForm">
+                        <div class="row">
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label for="nom_agent">Nom</label>
+                                <input type="text" value="{{agent.nom_agent}}" class="form-control" id="nom_agent" placeholder="Nom">
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-12">
+                            <div class="form-group">
+                                <label for="prenom_agent">Prénom</label>
+                                <input type="text" value="{{agent.prenom_agent}}" class="form-control" id="prenom_agent" placeholder="Prénom">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ville</label>
+                        <div >
+
+                                <select id="ville_agent" class="form-control select2">
+                                    {% if not ville_est_null %}
+                                        {% for ville in villes %}
+                                            <option value="{{ville.id}}" {% if ville.id == agent.ville_agent.id %}selected{% endif %}>{{ville.nom_ville}}</option>
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for ville in villes %}
+                                            <option value="{{ville.id}}">{{ville.nom_ville}}</option>
+                                        {% endfor %}
+                                    {% endif %}
+                                </select>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="adr_agent">Adresse</label>
+                            <input type="text" value="{% if agent.adr_agent != None %}{{agent.adr_agent}}{% endif %}" class="form-control" id="adr_agent" placeholder="Adresse">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" value="{{agent.user.email}}" class="form-control" id="email" placeholder="email address">
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">Téléphone</label>
+                        <input type="text" value="{{agent.user.telephone}}" class="form-control" id="tel" placeholder="Téléphone">
+                    </div>
+                    <input type="text" id="id_agent" value="{{agent.id}}" style="display:none;">
+                    <div class="form-group">
+                        <label class="form-label">Profile</label>
+                        <div >
+                            {% if request.session.profile != "Super admin" %}
+                                <input type="text" id="profile" value="{{agent.profile}}" disabled class="form-control">
+                            {% else %}
+                                <select class="form-control select2">
+                                {% for profile in profiles %}
+                                    <option value="{{profile}}">{{profile}}</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
+                        </div>
+                    </div>
+                    </form>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Modifications identifiants et image</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group mb-0 mt-5">
+                        <div class="row">
+                            <div class="col-xl-6 col-lg-12 col-md-12 userprofile">
+                                <div class="userpic mb-2">
+                                    {% if request.user.agent.photo_agent == '' %}
+                                        <img src="{% static 'assets/images/users/female/5.jpg' %}" class="avatar-xxl rounded-circle" alt="profile" class="userpicimg">
+                                    {% else %}
+                                        <img src="{{utilisateur.photo_agent.url}}" class="avatar-xxl rounded-circle" alt="profile">
+                                    {% endif %}
+                                </div>
+                                <div class="text-center">
+                                    <a href="#" class="btn btn-primary mt-1"><i class="fe fe-camera  mr-1"></i>Change Photo</a><br>
+                                    <a href="#" class="btn btn-info mt-1 mb-3 mb-xl-0"><i class="fe fe-camera-off mr-1 mb-2"></i>Remove Photo</a>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-12 col-md-12">
+                                <div style="margin-top:0;">
+                                    <form id="formId" method="post">
+                                        {% for field in form %}
+                                            {% csrf_token %}
+                                            {{form.errors}}
+                                            <div class="form-group">
+                                                <label>{{field.label}}</label>
+                                                {{field}}
+                                            </div>
+                                        {% endfor %}
+                                        <div class="text-center">
+                                        <button type="submit" id="btnEditerMotDePasse" class="btn btn-info btn-block mt-3">Valider</button>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer text-right">
+                    <button id="btnEnregistrer" class="btn btn-success mt-1" type="submit">Enregistrer</button>
+                    <button class="btn btn-warning mt-1" type="submit">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <!-- Notifications js -->
+    <script src="{% static 'assets/plugins/notify-growl/js/rainbow.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/sample.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/jquery.growl.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/notifIt.js' %}"></script>
+    <script>
+		$(document).ready(function(){
+		    $("#btnEditerMotDePasse").on("click",function(e){
+			var form = document.getElementById("formId");
+			function handleForm(event) { event.preventDefault(); }
+			form.addEventListener('submit', handleForm);
+			$.ajax({
+				url: "{% url 'elec_meter:edition_mot_de_passe' %}",
+				type: 'post',
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"ancien_mot_de_passe": $("#id_ancien_mot_de_passe").val(),
+                    "nouveau_mot_de_passe": $("#id_nouveau_mot_de_passe").val(),
+                    "confirm_mot_de_passe": $("#id_confirm_mot_de_passe").val(),
+				},
+				success: function(reponse){
+				    console.log(reponse["message"]);
+                    function not1(){
+                        notif({
+                            msg: "<b>Success:</b> "+reponse["message"],
+                            type: "success"
+                        });
+                    }
+                    not1();
+                    if(reponse["statut"] == "echec"){
+                        alert("echec: "+reponse["message"]);
+                    }else{
+                        alert("succès: "+reponse["message"]);
+                    }
+
+                    alert(reponse["message"]);
+				},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+		});
+	</script>
+
+    <script>
+        $("#btnEnregistrer").on("click",function(e){
+            var form = document.getElementById("myForm");
+            function handleForm(event) { event.preventDefault(); }
+            form.addEventListener('submit', handleForm);
+            alert($('#ville_agent option:selected').val());
+
+            $.ajax({
+                type: "post",
+                url: "{% url 'elec_meter:editer_donnees_personnelles' %}",
+                data: {
+                    "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                    "nom_agent": $("#nom_agent").val(),
+                    "prenom_agent": $("#prenom_agent").val(),
+                    "email": $("#email").val(),
+                    "tel": $("#tel").val(),
+                    "profile": $("#profile").val(),
+                    "adr_agent": $("#adr_agent").val(),
+                    "id_agent": $("#id_agent").val(),
+                    "ville_agent": $('#ville_agent option:selected').val()
+                },
+                success: function(){alert("ok");window.location.href="{% url 'elec_meter:details_agent' agent.id %}";}
+            });
+        });
+    </script>
+{% endblock %}

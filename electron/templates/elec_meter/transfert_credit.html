@@ -1,0 +1,68 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Transfer d'unités - Interactiv {% endblock %}
+{% block page %}Accueil{% endblock %}
+{% block titre %}Transfert d'unités{% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+  <div class="page-content" style="margin-top:100;">
+				<div class="container text-center">
+					<div class="row">
+						<div class="col-lg-6 mx-auto">
+							<div class="row">
+								<div class="col-xl-12 col-md-12 col-md-12">
+									<div>
+										<div style="margin-top:50px;">
+											<h3 style="margin-top:100">Transfert d'unités</h3>
+											<div>
+												{% if messages %}
+													<ul class="messages">
+														{% for message in messages %}
+															<li {% if message.tags == "warning" %}
+																	class='warning'
+																{% elif message.tags == "succes" %}
+																	class="warning"
+																{% endif %}>
+																{{ message }}
+															</li>
+														{% endfor %}
+													</ul>
+												{% endif %}
+											</div>
+											<!-- <p id="mess" style="text-align:none">En cours</p> -->
+											<p class="text-muted">Transférer les unités</p>
+											<form id="formId" action="" method="post">
+												{% csrf_token %}
+												<div><p>{{message_derreur}}</p></div>
+												{% for field in form %}
+													<div class="input-group mb-3">
+														{{field}}
+													</div>
+												{% endfor %}
+												<div class="row">
+													<div class="col-12 mx-auto">
+														<button type="submit" id="btnRegister" class="btn btn-primary btn-block px-4">Transférer</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+{% endblock %}
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			$(".errorlist").children("li").addClass("warning");
+			$("#btnRegister").on("click",function(){
+				//$("#mess").show();
+			});
+		});
+	</script>
+{% endblock %}

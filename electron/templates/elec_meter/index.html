@@ -1,0 +1,536 @@
+{% extends 'elec_meter/base.html' %}
+{% load mes_filtres %}
+{% load static %}
+{% block title %}Accueil - Ozangue {% endblock %}
+{% block page %}<a href="{% url 'elec_meter:home' %}">Accueil</a>{% endblock %}
+{% block titre %}Tableau de bord{% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row row-cards">
+        <div class="col-sm-12 col-lg-3">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Nombre total des compteurs</h4>
+                    <h1 class="mb-1 text-dark">{{total_compteurs}}</h1>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class="col-sm-12 col-lg-3">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4><a href="{% url 'elec_meter:liste_compteurs_libres' %}">Compteurs disponibles</a></h4>
+                    <h1 class="mb-1 ">{{c_sans_abonnement}}</h1>
+                </div>
+            </div>
+        </div>
+        <!-- col end -->
+        <div class="col-sm-12 col-lg-3">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Compteurs fonctionnels</h4>
+                    <h1 class="mb-1 ">{{c_avec_abonnement}}</h1>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-3">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Total compteurs defectueux</h4>
+                    <h1 class="mb-1">{{c_deffectuex}}</h1>
+                </div>
+            </div>
+        </div><!-- col end -->
+    </div>
+    <div class="row row-deck">
+        <div class="col-xl-4 col-lg-12 col-md-12" >
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <h5 class="card-title">Tension moyenne</h5>
+                    </div>
+                    <p class="text-muted">Moyenne de la de la tension au cours de l'année</p>
+                    <div class="chart-wrapper">
+                        <canvas id="graphe1" class="chart-drop" style="margin-bottom:5px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-12 col-md-12" >
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <h5 class="card-title">Moyenne consommation</h5>
+                    </div>
+                    <p class="text-muted">Moyenne de consommation des unités au cours de l'année</p>
+                    <div class="chart-wrapper">
+                        <canvas id="graphe2" class="chart-drop" style="margin-bottom:5px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-4 col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <h5 class="card-title">Consommation semaine passée</h5>
+                    </div>
+                    <p class="text-muted">Consommation des unités au cours de la semaine passée</p>
+                    <div class="chart-wrapper">
+                        <canvas id="graphe4" class="chart-drop" style="margin-bottom:5px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row row-deck">
+        <div class="col-xl-7">
+            <div class="card">
+                <div class="card-header custom-header pb-3">
+                    <div>
+                        <h3 class="card-title">Utilisateurs actifs</h3>
+                        <h6 class="card-subtitle">Utilisateurs</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="chart-circle mt-2 mb-2" data-value="{% widthratio nb_agents.2 100 1 %}" data-thickness="10" data-color="#467fcf">
+                                <div class="chart-circle-value"><div class="fs-1">{{nb_agents.2}}%</div></div>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <h4 class="mb-5">Utilisateurs actifs</h4>
+                            <div class="mb-5">
+                                <h5 class="mb-2 d-block">
+                                    <span class="fs-16 text-muted"><b class="text-body">{{nb_agents.0}}</b> Utilisateur</span>
+                                    <span class="float-right">{{nb_agents.2}}%</span>
+                                </h5>
+                                <div class="progress progress-md h-1">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-{{nb_agents.2 | to_int}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 class="mb-5">Utilisateurs inactifs</h4>
+                            <div class="mb-5">
+                                <h5 class="mb-2 d-block">
+                                    <span class="fs-16 text-muted"><b class="text-body">{{nb_agents.1}}</b> Utilisateur</span>
+                                    <span class="float-right">{{nb_agents.3}}%</span>
+                                </h5>
+                                <div class="progress progress-md h-1">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary w-{{nb_agents.3 | to_int}}"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="chart-circle chart-circle-md mt-2" data-value="{{nb_agents.3 | to_int}}" data-thickness="10" data-color="#5eba00">
+                                <div class="chart-circle-value"><div class="fs-1">{{nb_agents.3}}% </div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-5">
+            <div class="card">
+                <div class="card-header custom-header pb-0">
+                    <div>
+                        <h3 class="card-title">Utilisateurs connectés</h3>
+                        <h6 class="card-subtitle">Par mois</h6>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Graphe indisponible</p>
+                    <div class="chart-wrapper">
+                        <canvas id="sales-statistics" class="chart-dropshadow-primary h-250"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input type="text" name="periode" style="display:none">
+{% endblock %}
+{% block js %}
+    <script src="{% static 'assets/plugins/chart/chart.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/chart/utils.js' %}"></script>
+    <script src="{% static 'assets/plugins/owl-carousel/owl.carousel.js' %}"></script>
+    <script src="{% static 'assets/plugins/owl-carousel/owl-main.js' %}"></script>
+    <script src="{% static 'assets/js/index3.js' %}"></script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "{% url 'elec_meter:graphe_analyse' %}",
+                success: function(reponse){
+                    var ctx = $('#graphe1');
+                    ctx.height(300);
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: reponse["labels"],
+                            type: 'line',
+                            datasets: [{
+                                label: "Tension moyenne",
+                                data: reponse["data1"],
+                                backgroundColor: 'rgba(94, 186, 0,0.05)',
+                                borderColor: 'rgba(94, 186, 0,0.75)',
+                                borderWidth: 2,
+                                pointStyle: 'circle',
+                                pointRadius: 0,
+                                pointBorderColor: 'transparent',
+                                pointBackgroundColor: 'rgba(94, 186, 0,0.75)',
+                                    }, {
+                                label: "Courant moyen",
+                                data: reponse["data2"],
+                                backgroundColor: 'rgba(70, 127, 207,0.05)',
+                                borderColor: 'rgba(70, 127, 207,0.75)',
+                                borderWidth: 2,
+                                pointStyle: 'circle',
+                                pointRadius: 0,
+                                pointBorderColor: 'transparent',
+                                pointBackgroundColor: 'rgba(70, 127, 207,0.75)',
+                                    }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            tooltips: {
+                                mode: 'index',
+                                titleFontSize: 12,
+                                titleFontColor: 'rgba(0,0,0,0.9)',
+                                bodyFontColor: 'rgba(0,0,0,0.9)',
+                                backgroundColor: '#fff',
+                                bodyFontFamily: 'Montserrat',
+                                cornerRadius: 0,
+                                intersect: false,
+                            },
+                            legend: {
+                                display: false,
+                                labels: {
+                                    usePointStyle: true,
+                                    fontFamily: 'Montserrat',
+                                },
+                            },
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        color: 'rgba(161, 161, 161,0.3)'
+                                    },
+                                    scaleLabel: {
+                                        display: false,
+                                        labelString: '',
+                                        fontColor: '#a1a1a1'
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawBorder: true
+                                    },
+                                }]
+                            },
+                            title: {
+                                display: false,
+                                text: 'Normal Legend'
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "{% url 'elec_meter:graphe_credit_par_mois' %}",
+                success: function(reponse){
+                    var ctx = $('#graphe2');
+                    ctx.height(300);
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: reponse["labels"],
+                            type: 'line',
+                            datasets: [{
+                                label: "Moyenne crédit",
+                                data: reponse["data"],
+                                backgroundColor: 'rgba(70, 127, 207,0.05)',
+                                borderColor: 'rgba(70, 127, 207,0.75)',
+                                borderWidth: 2,
+                                pointStyle: 'circle',
+                                pointRadius: 0,
+                                pointBorderColor: 'transparent',
+                                pointBackgroundColor: 'rgba(70, 127, 207,0.75)',
+                                    }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            tooltips: {
+                                mode: 'index',
+                                titleFontSize: 12,
+                                titleFontColor: 'rgba(0,0,0,0.9)',
+                                bodyFontColor: 'rgba(0,0,0,0.9)',
+                                backgroundColor: '#fff',
+                                bodyFontFamily: 'Montserrat',
+                                cornerRadius: 0,
+                                intersect: false,
+                            },
+                            legend: {
+                                display: false,
+                                labels: {
+                                    usePointStyle: true,
+                                    fontFamily: 'Montserrat',
+                                },
+                            },
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        color: 'rgba(161, 161, 161,0.3)'
+                                    },
+                                    scaleLabel: {
+                                        display: false,
+                                        labelString: '',
+                                        fontColor: '#a1a1a1'
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawBorder: true
+                                    },
+                                }]
+                            },
+                            title: {
+                                display: false,
+                                text: 'Normal Legend'
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            var periode = "semaine";
+            $('input[name="periode"]').val(periode);
+            $(".display-graphe").on("click",function(){
+                periode = $(this).attr("periode");
+                $('input[name="periode"]').val(periode);
+            });
+            $('input[name="periode"]').trigger("input",function(){
+                alert($('input[name="periode"]').val());
+                $.ajax({
+                type: "post",
+                url: "{% url 'elec_meter:recharge_credit_par_province' %}",
+                data: {"csrfmiddlewaretoken" : "{{  csrf_token  }}","periode": $('input[name="periode"]').val()},
+                success: function(reponse){
+                    console.log(reponse);
+                    function getBoxWidth(labelOpts, fontSize) {
+                      return labelOpts.usePointStyle ?
+                        fontSize * Math.SQRT2 :
+                      labelOpts.boxWidth;
+                    };
+
+                    Chart.NewLegend = Chart.Legend.extend({
+                      afterFit: function() {
+                        this.height = this.height + 50;
+                      },
+                    });
+
+                    function createNewLegendAndAttach(chartInstance, legendOpts) {
+                      var legend = new Chart.NewLegend({
+                        ctx: chartInstance.chart.ctx,
+                        options: legendOpts,
+                        chart: chartInstance
+                      });
+
+                      if (chartInstance.legend) {
+                        Chart.layoutService.removeBox(chartInstance, chartInstance.legend);
+                        delete chartInstance.newLegend;
+                      }
+
+                      chartInstance.newLegend = legend;
+                      Chart.layoutService.addBox(chartInstance, legend);
+                    }
+
+                    // Register the legend plugin
+                    Chart.plugins.register({
+                      beforeInit: function(chartInstance) {
+                        var legendOpts = chartInstance.options.legend;
+
+                        if (legendOpts) {
+                          createNewLegendAndAttach(chartInstance, legendOpts);
+                        }
+                      },
+                      beforeUpdate: function(chartInstance) {
+                        var legendOpts = chartInstance.options.legend;
+
+                        if (legendOpts) {
+                          legendOpts = Chart.helpers.configMerge(Chart.defaults.global.legend, legendOpts);
+
+                          if (chartInstance.newLegend) {
+                            chartInstance.newLegend.options = legendOpts;
+                          } else {
+                            createNewLegendAndAttach(chartInstance, legendOpts);
+                          }
+                        } else {
+                          Chart.layoutService.removeBox(chartInstance, chartInstance.newLegend);
+                          delete chartInstance.newLegend;
+                        }
+                      },
+                      afterEvent: function(chartInstance, e) {
+                        var legend = chartInstance.newLegend;
+                        if (legend) {
+                          legend.handleEvent(e);
+                        }
+                      }
+                    });
+                    var ctx = document.getElementById( "graphe3" );
+                    var myChart = new Chart( ctx, {
+                        type: 'pie',
+                        data: {
+                            datasets: [ {
+                                data: reponse["data"],
+                                backgroundColor: [
+                                                    "#5eba00",
+                                                    "#467fcf",
+                                                    "#5b5be9",
+                                                    "#f5334f"
+                                                ],
+                                hoverBackgroundColor: [
+
+                                                    "#5eba00",
+                                                    "#467fcf",
+                                                    "#5b5be9",
+                                                    "#f5334f"
+                                                ]
+
+                                            } ],
+                            labels: reponse["labels"]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            legend: {
+                                labels: {
+                                    fontColor:"#a1a1a1",
+                                    padding: 10
+                                },
+                            },
+                        }
+                    } );
+                }
+            });
+            });
+
+        });
+    </script>
+    <script>
+        $(document).ready(function(){
+            $.ajax({
+                url: "{% url 'elec_meter:graphe_conso_semaine_passee' %}",
+                success: function(reponse){
+                    var ctx = $('#graphe4');
+                    ctx.height(300);
+                    var myChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: reponse["labels"],
+                            type: 'line',
+                            datasets: [{
+                                label: "Tension moyenne",
+                                data: reponse["data"],
+                                backgroundColor: 'rgba(94, 186, 0,0.05)',
+                                borderColor: 'rgba(94, 186, 0,0.75)',
+                                borderWidth: 2,
+                                pointStyle: 'circle',
+                                pointRadius: 0,
+                                pointBorderColor: 'transparent',
+                                pointBackgroundColor: 'rgba(94, 186, 0,0.75)',
+                                    }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            tooltips: {
+                                mode: 'index',
+                                titleFontSize: 12,
+                                titleFontColor: 'rgba(0,0,0,0.9)',
+                                bodyFontColor: 'rgba(0,0,0,0.9)',
+                                backgroundColor: '#fff',
+                                bodyFontFamily: 'Montserrat',
+                                cornerRadius: 0,
+                                intersect: false,
+                            },
+                            legend: {
+                                display: false,
+                                labels: {
+                                    usePointStyle: true,
+                                    fontFamily: 'Montserrat',
+                                },
+                            },
+                            scales: {
+                                xAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        color: 'rgba(161, 161, 161,0.3)'
+                                    },
+                                    scaleLabel: {
+                                        display: false,
+                                        labelString: '',
+                                        fontColor: '#a1a1a1'
+                                    }
+                                }],
+                                yAxes: [{
+                                    ticks: {
+                                        fontColor:"#a1a1a1",
+                                    },
+                                    display: true,
+                                    gridLines: {
+                                        display: false,
+                                        drawBorder: true
+                                    },
+                                }]
+                            },
+                            title: {
+                                display: false,
+                                text: 'Normal Legend'
+                            }
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+{% endblock %}

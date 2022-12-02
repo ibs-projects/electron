@@ -1,0 +1,162 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Contrats - Interactiv {% endblock %}
+{% block page %}<a href="#">Contrats</a>{% endblock %}
+{% block titre %} Liste des contrats {% endblock %}
+{% block add %}{% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0 d-inline-block d-flex justify-content-between">
+                    <h3 class="card-title ">Tous les contrats</h3>
+                    <div class="card-options mr-0">
+                        <a href="#" id="add__new__list" data-toggle="modal" data-target="#modalEquivalence"><i class="fa fa-plus"></i> Ajouter contrat</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatables" class="table table-striped table-bordered text-nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-top-0">Numéro du contrat</th>
+                                    <th scope="col" class="border-top-0">Type de compteur</th>
+                                    <th scope="col" class="border-top-0">Valeur en CFA</th>
+                                    <th scope="col" class="border-top-0">Valeur en unites</th>
+                                    <th scope="col" class="border-top-0">Actions </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for contrat in contrats %}
+                                <tr>
+                                    <td>{{contrat.numero_contrat}}</td>
+                                    <td>{{contrat.type_compteur}}</td>
+                                    <td>{{contrat.valeur_en_cfa}}</td>
+                                    <td>{{contrat.unites}}</td>
+                                    <td style="width:50px;">
+                                        <a href="#"  class="edit" id_contrat="{{contrat.id}}" data-toggle="modal" data-target="#modalModifContrat"><i class="fa fa-edit"></i> Editer</a>&nbsp
+                                        <a href="#" class="text-danger delete" id_contrat="{{contrat.id}}"><i class="fa fa-trash danger"></i> Supprimer</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div><!-- col end -->
+    </div>
+
+    <div class="modal fade" id="modalModifContrat" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="modifContrat">Modifier un contrat </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_equivalence" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="form-label">Type de compteur</label>
+						<select name="type_compteur" id="type_compteur" class="form-control custom-select">
+							<option value="Mono phasé">Mono phasé</option>
+							<option value="Tri phasé">Tri phasé</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="credits" class="form-control-label">Numéro du contrat:</label>
+						<input type="text"  class="form-control" id="numcontrat">
+					</div>
+					<div class="form-group">
+						<label for="credits" class="form-control-label">Crédits en CFA:</label>
+						<input type="text" disabled value="1000"  class="form-control" id="credits">
+					</div>
+					<div class="form-group">
+						<label for="unites" class="form-control-label">Unités:</label>
+						<input type="text" class="form-control" id="unites">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnEquivalence">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap4.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/vfs_fonts.js"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/datatable-2.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        $(".delete").on("click",function(){
+            var id_contrat = $(this).attr("id_contrat");
+             Swal.fire({
+              title: 'Etes vous sur?',
+              text: "Vous etes sur le point de supprimer ce contrat!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              cancelButtonText: 'Non',
+              confirmButtonText: 'Oui'
+            }).then((result) => {
+              if (result.isConfirmed) {
+
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'elec_meter:supprimer_contrat' %}",
+                    data: {
+                        "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                        "id_contrat": id_contrat
+                    },
+                    success: function(){
+                        Swal.fire(
+                          'Supprimé!',
+                          'Contrat supprimé.',
+                          'success'
+                        );
+                        window.location.reload();
+                    },
+                    error: function(){alert("Erreur ajax");}
+                });
+              }
+            });
+        });
+       $(".edit").on("click",function(){
+        var id_contrat = $(this).attr("id_contrat");
+        $.ajax({
+          type: "post",
+          url: "{% url 'elec_meter:details_contrat' %}",
+          data: {"contrat":id_contrat,"csrfmiddlewaretoken" : "{{  csrf_token  }}",},
+          success: function(contrat){console.log(contrat);},
+          error: function(){alert("Erreur ajax");}
+        });
+       });
+    });
+</script>
+{% endblock %}
+
+

@@ -1,0 +1,67 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Ajout d'un client {% endblock %}
+{% block page %}Clients {% endblock %}
+{% block titre %} Enregistrer client {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+                <form action="" method="post" id="formID">
+                    {% csrf_token %}
+                    <div class="card-body">
+                        <div style="margin-top:10" class="alert alert-warning alert-dismissible fade show container text-center" role="alert">{{message_derreur}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    {{form.nom_client}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.prenom_client}}
+                                </div>
+                                <div class="form-group">
+                                    <select name="ville_client" id="ville_client" class="form-control custom-select">
+                                        {% for ville in villes %}
+                                            <option value="{{ville.id}}">{{ville}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    {{form.adr_client}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.tel_client}}
+                                </div>
+                                <div class="form-group">
+                                    {{form.email_client}}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top:15px;">
+                            <div class="btn-list text-center">
+                                <button class="btn btn-primary" id="enrgMachine" type="submit">Enregistrer</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+    {% block js %}
+    {% endblock %}
+

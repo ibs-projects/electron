@@ -1,0 +1,67 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Ajout d'un utilisateur - Interactiv {% endblock %}
+{% block page %}Accueil{% endblock %}
+{% block titre %}Ajouter un utilisateur{% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+  <div class="page-content">
+				<div class="container text-center text-dark">
+					<div class="row">
+						<div class="col-lg-4 d-block mx-auto">
+							<div class="row">
+								<div class="col-xl-12 col-md-12 col-md-12">
+									<div class="card">
+										<div class="card-body">
+											<h3>Nouveau compte</h3>
+											<div>
+												{% if messages %}
+													<ul class="messages">
+														{% for message in messages %}
+															<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+														{% endfor %}
+													</ul>
+												{% endif %}
+											</div>
+											{% if error_exists == 'yes' %}
+												<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+												</button>
+													{{form.errors.email}}
+												</div>
+											{% endif %}
+											<p class="text-muted">Créer un compte</p>
+											<form id="formId" action="" method="post">
+												{% csrf_token %}
+												{{form.errors}}
+												{% for field in form %}
+													<div class="input-group mb-3">
+														<span class="input-group-addon bg-white">
+															<i class="{% if field.html_name == 'email' %}
+																fa fa-envelope
+															{% else %}
+																fa fa-user w-4
+															{% endif %}
+														">
+															</i></span>
+														{{field}}
+													</div>
+												{% endfor %}
+												<div class="row">
+													<div class="col-12">
+														<button type="submit" id="btnRegister" class="btn btn-primary btn-block px-4">Créer le compte</button>
+													</div>
+												</div>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+{% endblock %}
+{% block js %}
+{% endblock %}

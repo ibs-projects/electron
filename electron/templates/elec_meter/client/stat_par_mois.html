@@ -1,0 +1,226 @@
+{% extends "elec_meter/client/base.html" %}
+{% load static %}
+{% block page %}Statistiques{% endblock %}
+{% block titre %}Consommation mesuelle du compteur {{devEUI}}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h3 class="card-title">Variation d'énergie</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartjs15" class="h-230 "></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 col-md-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h3 class="card-title">Variation de la tension</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="chartjs16" class="h-230 "></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <!-- Chartist js -->
+    <script src="{% static 'assets/plugins/chart/chart.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/chart/utils.js' %}"></script>
+
+    <script>
+        $(document).ready(function(){
+            var myCanvas = document.getElementById("chartjs16");
+            myCanvas.height="300";
+
+            var myCanvasContext = myCanvas.getContext("2d");
+            var gradientStroke1 = myCanvasContext.createLinearGradient(0, 0, 0, 280);
+            gradientStroke1.addColorStop(0, '#5eba00');
+            gradientStroke1.addColorStop(1, '#5eba00');
+
+            var myCanvas2 = document.getElementById("chartjs15");
+            myCanvas2.height = "300";
+            var myCanvasContext2 = myCanvas2.getContext("2d");
+
+            var gradientStroke2 = myCanvasContext.createLinearGradient(0, 0, 0, 280);
+            gradientStroke2.addColorStop(0, '#467fcf');
+            gradientStroke2.addColorStop(1, '#467fcf');
+
+            $.ajax({
+                url: "{% url 'elec_meter:client_stat_par_mois' request.session.context.devEUI %}",
+                success: function(reponse){
+                    var myChart = new Chart( myCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: reponse["labels1"],
+                        type: 'line',
+                        datasets: [ {
+                            label: 'Tension moyenne',
+                            data: reponse["data1"],
+                            backgroundColor: 'rgb(94, 186, 0, 0.2)',
+                            borderColor: gradientStroke1,
+                            pointBackgroundColor:'#fff',
+                            pointHoverBackgroundColor:gradientStroke1,
+                            pointBorderColor :gradientStroke1,
+                            pointHoverBorderColor :gradientStroke1,
+                            pointBorderWidth :2,
+                            pointRadius :2,
+                            pointHoverRadius :2,
+                            borderWidth: 2
+                        }, ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false
+                        },
+                        responsive: true,
+                        tooltips: {
+                            mode: 'index',
+                            titleFontSize: 12,
+                            titleFontColor: '#6b6f80',
+                            bodyFontColor: '#6b6f80',
+                            backgroundColor: '#fff',
+                            titleFontFamily: 'Montserrat',
+                            bodyFontFamily: 'Montserrat',
+                            cornerRadius: 3,
+                            intersect: false,
+                        },
+                        scales: {
+                            xAxes: [{
+                                barPercentage: 0.1,
+                                ticks: {
+                                    fontColor: "#bbc1ca",
+                                 },
+                                display: true,
+                                gridLines: {
+                                    display: true,
+                                    color: 'rgba(187, 193, 202,0.2)',
+                                    drawBorder: false
+                                },
+                                scaleLabel: {
+                                    display: false,
+                                    labelString: 'Month',
+                                    fontColor: 'transparent'
+                                }
+                            }],
+                            yAxes: [{
+                                ticks: {
+                                    fontColor: "#bbc1ca",
+                                 },
+                                display: true,
+                                gridLines: {
+                                    display: true,
+                                    color: 'rgba(187, 193, 202,0.2)',
+                                    drawBorder: false
+                                },
+                                scaleLabel: {
+                                    display: false,
+                                    labelString: 'sales',
+                                    fontColor: 'transparent'
+                                }
+                            }]
+                        },
+                        title: {
+                            display: false,
+                        },
+                        elements: {
+                            line: {
+                                borderWidth: 1
+                            },
+                            point: {
+                                radius: 4,
+                                hitRadius: 10,
+                                hoverRadius: 4
+                            }
+                        }
+                    }
+                });
+
+
+        var myChart = new Chart(myCanvas2, {
+		type: 'line',
+		data: {
+			labels: reponse["labels2"],
+			type: 'line',
+			datasets: [ {
+				label: "Energie consommée",
+				data: reponse["data2"],
+				backgroundColor: 'transparent',
+				borderColor: gradientStroke2,
+				pointBackgroundColor: '#fff',
+				pointHoverBackgroundColor: gradientStroke2,
+				pointBorderColor: gradientStroke2,
+				pointHoverBorderColor: gradientStroke2,
+				pointBorderWidth: 4,
+				pointRadius: 2,
+				pointHoverRadius: 2,
+				borderWidth: 2
+			}]
+		},
+		options: {
+			responsive: true,
+			maintainAspectRatio: false,
+			tooltips: {
+				mode: 'index',
+				titleFontSize: 12,
+				titleFontColor: 'rgba(0,0,0,0.5)',
+				bodyFontColor: 'rgba(0,0,0,0.5)',
+				backgroundColor: '#fff',
+				cornerRadius: 3,
+				intersect: false,
+			},
+			legend: {
+				display: false,
+				labels: {
+					usePointStyle: true,
+				},
+			},
+			scales: {
+				xAxes: [{
+					ticks: {
+						fontColor: "#bbc1ca",
+					},
+					display: true,
+					gridLines: {
+						color:'rgba(187, 193, 202,0.2)',
+					},
+					scaleLabel: {
+						display: true,
+						labelString: 'Month',
+						fontColor: '#bbc1ca'
+					}
+				}],
+				yAxes: [{
+					ticks: {
+						fontColor: "#bbc1ca",
+					},
+					display: true,
+					gridLines: {
+						display: false,
+						drawBorder: true
+					},
+					scaleLabel: {
+						display: true,
+						labelString: 'Revenue by channel',
+						fontColor: '#bbc1ca'
+					}
+				}]
+			},
+			title: {
+				display: false,
+				text: 'Normal Legend'
+			}
+		}
+	});
+
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

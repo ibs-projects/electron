@@ -1,0 +1,60 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Geolocalisation des compteurs - Interactiv {% endblock %}
+{% block page %}<a href="{% url 'elec_meter:liste_compteurs'%}">Compteurs</a> {% endblock %}
+{% block titre %} Carte {% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/css/map.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block add %}
+{% endblock %}
+
+{% block content %}
+    <div class="row" onload="init">
+		<div id="mapid" class="col-md-12 col-lg-12">
+
+			<!-- table-wrapper -->
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	<script>
+		$(document).ready(function(){
+			$("#menuCompteur").addClass('active');
+				var map = L.map('mapid', {
+				center: [-0.803689, 11.609444],
+				zoom: 8,
+			});
+			L.control.scale({ imperial: true, metric: true }).addTo(map);
+			L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+				maxZoom: 20,
+				attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+			}).addTo(map);
+			//var marker = L.marker([0.3700059,9.5091615]).addTo(map);
+			function displayMarkerDetails(e){alert("ok");}
+			$.ajax({
+				type: "get",
+				url: "{% url 'elec_meter:charger_carte' %}",
+				success: function(points){
+					var markers = [];
+					for(let i = 0; i < points.length; i++){
+						markers[i] = L.marker([points[i]["lat"],points[i]["lng"]]).addTo(map);
+						markers[i].addEventListener("mouseover",function(){
+							var adr = points[i]['adr']; var pointservice = points[i]['pointservice'];
+							var etat_valve = points[i]['etat_valve']
+							this.bindPopup("<b>"+"adresse: "+adr+"</b>"+"<br>"+"Etat: "+etat_valve).openPopup()
+						});
+					}
+				},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+	</script>
+{% endblock %}
+
+

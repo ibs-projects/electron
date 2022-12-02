@@ -1,0 +1,63 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Les utilisateurs - Interactiv {% endblock %}
+{% block page %}<a href="{% url 'elec_meter:liste_agents' %}">Utilisateurs </a>{% endblock %}
+{% block titre %} Les agents {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <h3 class="card-title ">Agents</h3>
+                    <div class="card-options mr-0">
+                        <button id="add__new__list" type="button" class="btn btn-sm btn-primary " data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-plus"></i> Ajouter un agent</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table card-table table-striped table-vcenter table-outline table-bordered text-nowrap border-top">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-top-0">Nom</th>
+                                    <th scope="col" class="border-top-0">Prenom</th>
+                                    <th scope="col" class="border-top-0">Email</th>
+                                    <th scope="col" class="border-top-0">Telephone</th>
+                                    <th scope="col" class="border-top-0">Actions</th>
+                                    <th scope="col" class="border-top-0">Infos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for agent in agents %}
+                                <tr>
+                                        <td>{{agent.nom_agent}}</td>
+                                        <td>{{agent.prenom_agent}}</td>
+                                        <td>{{agent.user.email}}</td>
+                                        {% if agent.user.telephone == '' %}
+                                            <td>Non renseigné</td>
+                                        {% else %}
+                                            <td>{{agent.user.telephone}}</td>
+                                        {% endif %}
+                                        <td style="width:50px;">
+                                            <a class="btn btn-sm btn-primary" href="#"><i class="fa fa-edit"></i> Edit</a>
+                                            <a class="btn btn-sm btn-danger" href="#"><i class="fa fa-trash"></i> Delete</a>
+                                        </td>
+                                        <td style="width:50px;"><a class="btn btn-sm btn-info" href="{% url 'elec_meter:details_agent' agent.id %}"><i class="fa fa-info-circle"></i> Details</a> </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $("#add__new__list").on("click",function(){
+            window.location.href = "{% url 'elec_meter:register' %}";
+        });
+    </script>
+{% endblock %}

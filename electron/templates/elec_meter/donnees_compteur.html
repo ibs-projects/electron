@@ -1,0 +1,804 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Données en temps réel du compteur {{compteur.devEUI}} - Interactiv {% endblock %}
+{% block page %}Compteurs {% endblock %}
+{% block titre %} Données en temps réel du compteur {{compteur.devEUI}} {% if compteur.etat.etat_valve == "off" %}
+	<p style="float:right;" class="text-warning">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Statut du compteur: Eteint
+{% elif compteur.etat.etat_valve == "on" %}
+	<p style="float:right;color:green;">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Statut du compteur: Allumé
+{% else %}
+	<p style="float:right;color:red;">&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;Statut du compteur: Non enregistré
+	{{compteur.etat.etat_valve}}
+{% endif  %} </p>
+{% endblock %}
+{% block add %}{% endblock %}
+
+{% block css %}
+	<!--- Internal Treeview -->
+        <link href="{% static 'assets/plugins/treeview/treeview.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="card mg-b-20">
+				<div class="card-body">
+					<div class="main-content-label mg-b-5">
+						<h4>Gestion du compteur</h4>
+					</div>
+					<div class="row">
+						<!-- col -->
+						<div class="col-lg-4">
+							<ul id="treeview1">
+								<li>Historique
+									<ul>
+										<li><a href="{% url 'elec_meter:transactions' compteur.devEUI %}">Transferts & recharges</a></li>
+										<li><a href="{% url 'elec_meter:emprunts' compteur.devEUI %}">Emprunts</a></li>
+									</ul>
+								</li>
+								<li><a href="#">Actions à mener</a>
+									<ul>
+										{% if compteur.etat.etat_valve == "off" %}
+											<li class="allumer_eteindre" act="allumer"><a href="#">Remettre en service</a></li>
+										{% elif   compteur.etat.etat_valve == "on" %}
+											<li class="allumer_eteindre" act="eteindre"><a href="#" >Mettre hors service</a></li>
+										{% else %}
+											<li>Aucune action</li>
+										{% endif %}
+										<li id="suppr_machine"><a href="#">Supprimer le compteur</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!-- /col -->
+
+						<!-- col -->
+						<div class="col-lg-4 mt-4 mt-lg-0">
+							<ul id="treeview2">
+								<li><a href="#">Transactions</a>
+									<ul>
+										<li id="recharge_unites" data-toggle="modal" data-target="#modalRechargeUnites"><a href="#">Recharger compteur</a></li>
+										<li id="transfert_credit" data-toggle="modal" data-target="#modalTransfertUnites"><a href="#">Transférer des unités</a></li>
+										<li><a href="#" data-toggle="modal" data-target="#modalEmprunterUnites">Emprunter des unités</a></li>
+									</ul>
+								</li>
+								<!-- <li><a href="#">Gestion du compte</a>
+									<ul>
+										<li id="etat_compte" data-toggle="modal" data-target="#modalAchatUnites"><a href="#">Activer compte</a></li>
+										<li id="gerer_compte" data-toggle="modal" data-target="#modalRechargeUnites"><a href="#">Arreter compte</a></li>
+									</ul>
+								</li> -->
+							</ul>
+						</div>
+						<!-- /col -->
+
+						<!-- col -->
+						<div class="col-lg-4 mt-4 mt-lg-0">
+							<ul id="treeview3">
+								<li><a href="#">Données en temps réel</a>
+									<ul>
+										<li data-toggle="modal" data-target="#smallModal"><a href="#">Definir la periode de push</a></li>
+										<li><a href="{% url 'elec_meter:historique_compteur' compteur %}">Historique</a></li>
+										<li><a href="{% url 'elec_meter:stats_donnees_compteur' compteur %}">Statistiques</a></li>
+									</ul>
+								</li>
+							</ul>
+						</div>
+						<!-- /col -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-12 col-lg-12 col-xl-4 col-sm-12">
+			<div class="card">
+				<div class="card-header pb-0">
+					<div><h2 class="card-title">Informations du client</h2></div>
+					<div class="card-options">
+						<a href="" class="mr-4 text-default" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<span class="fa fa-ellipsis-v"></span>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li data-toggle="modal" data-target="#exampleModal3"><a href="#"><i class="si si-pencil mr-2"></i>Modifier</a></li>
+							<li><a href="#"><i class="si si-reload mr-2"></i>Actualiser</a></li>
+						</ul>
+					</div>
+				</div>
+				<div >
+					<table class="table card-table ">
+						<tr class="border-bottom">
+							<td class="border-top-0">Nom</td>
+							<td class="text-right border-top-0">
+								<span style="font-weight: bold;">{{compteur.client.nom_client}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Prénom</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.client.prenom_client}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Téléphone</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.client.tel_client}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Email</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.client.email}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Ville</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.ville_machine}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td><a href="#">Localisation</a> (Quartier)</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.abonnement.adresse}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Longitude</td>
+							<td class="text-right">
+								<span class="badge badge-warning">{{compteur.abonnement.lon_machine}}</span>
+							</td>
+						</tr>
+						<tr class="">
+							<td>Latitude</td>
+							<td class="text-right">
+								<span class="badge badge-warning">{{compteur.abonnement.lat_machine}}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-12 col-xl-4 col-sm-12">
+			<div class="card">
+				<div class="card-header pb-0">
+					<div><h2 class="card-title">Informations du compteur</h2></div>
+					<div class="card-options">
+						<a href="" class="mr-4 text-default" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true">
+							<span class="fa fa-ellipsis-v"></span>
+						</a>
+						<ul class="dropdown-menu dropdown-menu-right" role="menu">
+							<li data-toggle="modal" data-target="#exampleModal2" id="btnModifierNomCompteur"><a href="#"><i class="si si-pencil mr-2"></i>Modifier infos</a></li>
+							<li data-toggle="modal" data-target="#modalEditLocalisation" id="btnModifierAbonnement"><a href="#"><i class="si si-pencil mr-2"></i>Modifier localisation</a></li>
+							<li><a href="#"><i class="si si-reload mr-2"></i>Actualiser</a></li>
+						</ul>
+					</div>
+				</div>
+				<div >
+					<table class="table card-table ">
+						<tr class="border-bottom">
+							<td class="border-top-0">Nom du compteur</td>
+							<td class="text-right border-top-0">
+								{% if compteur.devName == "" %}
+									<span style="font-weight: bold;">Non défini</span>
+								{% else %}
+									<span style="font-weight: bold;">{{compteur.devName}}</span>
+								{% endif %}
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td class="border-top-0">Numéro</td>
+							<td class="text-right border-top-0">
+								<span style="font-weight: bold;">{{compteur.devEUI}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td class="border-top-0">Gateway</td>
+							<td class="text-right border-top-0">
+								<span style="font-weight: bold;">{{donnees.infos_signal.gwid.gw_id}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Type de compteur</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{compteur.type_machine}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Classe</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.infos_signal.classe}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Frequence du signal</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.infos_signal.freq}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>rssi</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.infos_signal.rssi}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td> snr</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.infos_signal.snr}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>fPort</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.infos_signal.fPort}}</span>
+							</td>
+						</tr>
+						<tr class="">
+							<td>Dernière apparition</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{date_creation}}</span>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 col-lg-12 col-xl-4 col-sm-12">
+			<div class="card">
+				<div class="card-header pb-0">
+					<h2 class="card-title">Données d'utilisation</h2>
+				</div>
+				<div >
+					{% if compteur.type_machine == 'Mono phasé' %}
+						<table class="table card-table ">
+							<tr class="border-bottom">
+								<td class="border-top-0">Unités:</td>
+								<td class="text-right border-top-0">
+									<span style="font-weight: bold;">{{donnees.unites}}</span>
+								</td>
+							</tr>
+							<tr class="border-bottom">
+								<td>Tension</td>
+								<td class="text-right">
+									<span style="font-weight: bold;">{{donnees.tension}}</span>
+								</td>
+							</tr>
+							<tr class="border-bottom">
+								<td>Courant</td>
+								<td class="text-right">
+									<span style="font-weight: bold;">{{donnees.courant}}</span>
+								</td>
+							</tr>
+							<tr class="border-bottom">
+								<td>Energie active totale</td>
+								<td class="text-right">
+									<span style="font-weight: bold;">{{donnees.energie_active}}</span>
+								</td>
+							</tr>
+							<tr class="border-bottom">
+								<td>Statut de l'équipement</td>
+								<td class="text-right">
+									<span style="font-weight: bold;">{{donnees.statut_equipement}}</span>
+								</td>
+							</tr>
+							<tr class="border-bottom">
+								<td> Statut alarme</td>
+								<td class="text-right">
+									<span style="font-weight: bold;">{{donnees.statut_alarme}}</span>
+								</td>
+							</tr>
+						</table>
+					{% else %}
+						<table class="table card-table ">
+						<tr class="border-bottom">
+							<td class="border-top-0">Unités</td>
+							<td class="text-right border-top-0">
+								<span style="font-weight: bold;">{{donnees.unites}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Tension a, b, c</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.tension_a}} {{tension.voltage_b}} {{tension_c.voltage_c}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Courant a,b,c</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.courant_a}} {{donnees.courant_b}} {{donnees.courant_c}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Energie active</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.energie_active}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td>Statut équipement</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.statut_equipement}}</span>
+							</td>
+						</tr>
+						<tr class="border-bottom">
+							<td> Statut alarme</td>
+							<td class="text-right">
+								<span style="font-weight: bold;">{{donnees.statut_alarme}}</span>
+							</td>
+						</tr>
+					</table>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="modalEmprunterUnites" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-emprunt">Emprunter des unités</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="rep" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Nombre d'unités:</label>
+							<input type="number" class="form-control" id="montant_emprunt">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="boutonEmprunterUnites" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="example-Modal3">Modifier informations du client</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse1" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Nom du client:</label>
+							<input value="{{compteur.client.nom_client}}" type="text" class="form-control" id="nom_client">
+						</div>
+						<div class="form-group">
+							<label for="prenom_client" class="form-control-label">Prénom du client:</label>
+							<input value="{{compteur.client.prenom_client}}" type="text" class="form-control" id="prenom_client">
+						</div>
+						<div class="form-group">
+							<label for="email_client" class="form-control-label">Email:</label>
+							<input value="{{compteur.client.email}}" type="text" class="form-control" id="email_client">
+						</div>
+						<div class="form-group">
+							<label for="tel_client" class="form-control-label">Teléphone:</label>
+							<input type="text" value="{{compteur.client.tel_client}}" class="form-control" id="tel_client">
+						</div>
+						<input type="text" id="num_machine" style="display:none" value="{{compteur.devEUI}}">
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="modiferInfoClient" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="example-Modal2">Modifier informations du compteur</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse2" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Nom du compteur:</label>
+							<input value="{{compteur.devName}}" type="text" class="form-control" id="devName">
+						</div>
+						<!-- <label class="custom-control custom-checkbox">
+							<input type="checkbox" {% if compteur.est_fournisseur == True %}checked{% endif %} class="custom-control-input" name="example-checkbox1" id="etatFournisseur" value="option1">
+							<span class="custom-control-label">Est fournisseur</span>
+						</label> -->
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="modiferInfoCompteur" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="modalEditLocalisation" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-EditLocalisation">Modifier la localisation</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form action="" method="post" id="formEditLocation">
+						{% csrf_token %}
+						<div class="form-group">
+							<label for="id_pointservice" class="form-control-label">Point de service</label>
+							<input name="pointservice" value="{{compteur.abonnement.point_service}}" type="text" class="form-control" id="id_pointservice">
+						</div>
+						<div class="form-group">
+							<label for="id_latitude"  class="form-control-label">Latitude</label>
+							<input name="latitude" value="{{compteur.abonnement.lat_machine}}" type="number" step="0.000000001" class="form-control" id="id_latitude">
+						</div>
+						<div class="form-group">
+							<label for="id_longitude"  class="form-control-label">Longitude</label>
+							<input name="longitude" value="{{compteur.abonnement.lon_machine}}" type="number" step="0.000000001" class="form-control" id="id_longitude">
+						</div>
+						<input value="{{compteur.devEUI}}" name="deveui" type="hidden" class="form-control" id="id_deveui" style="">
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="modiferLocalCompteur" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="smallModal" class="modal fade">
+		<div class="modal-dialog modal-sm" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6 class="tx-14 mg-b-0 tx-uppercase tx-inverse tx-bold">Choisissez une période</h6>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="#" id="periodeOptionForm">
+						<div class=" card-body">
+						<div class="form-group form-elements">
+							<div class="form-label">Options</div>
+							<div class="custom-controls-stacked">
+								{% for periode in periodes %}
+									<label class="custom-control custom-radio" id="{{periode.labelle}}">
+										<input type="radio" class="custom-control-input" name="example-radios" value="{{periode.valeur}}" {% if forloop.first %}checked{% endif %}>
+										<span class="custom-control-label">{{periode.labelle}}</span>
+									</label>
+								{% endfor %}
+							</div>
+						</div>
+					</div>
+					</form>
+				</div><!-- modal-body -->
+				<div class="modal-footer">
+					<button type="button" data-dismiss="modal"  class="btn btn-secondary">Annuler</button>
+					<button type="button" id="btnModifierPeriodePush" class="btn btn-primary" data-dismiss="modal">Valider</button>
+				</div>
+			</div>
+		</div><!-- modal-dialog -->
+	</div><!-- modal -->
+
+	<div class="modal fade" id="modalAchatUnites" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-achat-unite">Achter les unités</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse_achat" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Montant</label>
+							<input type="number" step="0.001" class="form-control" id="montant_recharge">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="achatCredit" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="modalRechargeUnites" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-recharge-unite">Recharger ce compteur</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse_recharge" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Montant</label>
+							<input type="number"  class="form-control" id="montant_a_recharge">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="btnRechergeUnites" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="modalTransfertUnites" tabindex="-1" role="dialog"  aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-transfert-unite">Transférer des unités</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<p id="reponse_transfert" style="display:none"></p>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Compteur bénéficiaire</label>
+							<input type="text"  class="form-control" id="beneficiaire">
+						</div>
+						<div class="form-group">
+							<label for="nom_client" class="form-control-label">Montant</label>
+							<input type="number" step="0.001" class="form-control" id="mtn_transfert">
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+					<button id="btnTransfertUnites" type="button" class="btn btn-primary">Valider</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
+{% block js %}
+	<!--- Internal Treeview js -->
+	<script src="{% static 'assets/plugins/treeview/treeview.js' %}"></script>
+    <script src="{% static 'assets/plugins/horizontal-menu/horizontalmenu.js' %}"></script>
+	<script>
+		var val_statut = $("#p_id").val();
+		if(val_statut=="Etteint"){
+			$("#p_id").css({"color":red});
+		}
+		$(document).ready(function(){
+			$("#modiferInfoClient").on("click",function(){
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:modifier_infos_client' %}",
+					data: {
+						"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+						"num_compteur": "{{compteur.devEUI}}",
+						"nom_client": $("#nom_client").val(),
+						"prenom_client": $("#prenom_client").val(),
+						"email_client": $("#email_client").val(),
+						"tel_client": $("#tel_client").val(),
+						"num_machine": $("#num_machine").val(),
+					},
+					success: function(reponse){
+						if(reponse["statut"]=="echec"){
+							$("#reponse1").text(reponse["message"]);
+							$("#reponse1").show();
+						}else{
+							location.reload();
+						}
+					},
+					error: function(){alert("Erreur ajax !")}
+				});
+			});
+			$("#modiferInfoCompteur").on("click",function(){
+				if(document.getElementById("etatFournisseur").checked){
+					var optionFournisseur = "1";
+				}else{
+					var optionFournisseur = "2";
+				}
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:modifier_nom_compteur' %}",
+					data: {
+						"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+						"devName": $("#devName").val(),
+						"num_machine": $("#num_machine").val(),
+						"optionFournisseur": optionFournisseur
+					},
+					success: function(reponse){
+						if(reponse["statut"]=="echec"){
+							$("#reponse").text(reponse["message"]);
+							$("#reponse").show();
+						}else{
+							document.location.reload();
+						}
+					},
+					error: function(){alert("Erreur ajax !")}
+				})
+			});
+			/* $("#modiferLocalCompteur").on("click",function(){
+
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:modifier_localisation_compteur' %}",
+					data: $("#formEditLocation").serialize(),
+					success: function(reponse){alert(reponse["msg"]);},
+					error: function(){alert("Une erreur s'est produite");}
+				});
+			}); */
+			$("#btnModifierPeriodePush").on("click",function(){
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:modifier_periode' %}",
+					data: {
+						"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+						"periode": $("input[name=example-radios]:checked","#periodeOptionForm").val(),
+						"devEUI": "{{compteur.devEUI}}",
+						"fPort": "{{donnees.infos_signal.fPort}}"
+					},
+					success: function(reponse){
+						alert(reponse["message"]);
+					},
+					error: function(){alert("Erreur ajax");}
+				});
+			});
+			$(".allumer_eteindre").on("click",function(){
+				var action = $(this).attr("act");
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:modifier_etat_valve' %}",
+					data:{
+						"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+						"action": action,
+						"devEUI": "{{compteur.devEUI}}",
+						"fPort": "{{donnees.infos_signal.fPort}}"
+					},
+					success: function(reponse){
+						alert(reponse["message"]);
+						document.location.reload();
+					},
+					error: function(){alert("Erreur")}
+				});
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#suppr_machine").on("click",function(){
+             Swal.fire({
+              title: 'Etes vous sur?',
+              text: "Vous etes sur le point de supprimer ce compteur!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              cancelButtonText: 'Non',
+              confirmButtonText: 'Oui'
+            }).then((result) => {
+              if (result.isConfirmed) {
+
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'elec_meter:suppression_compteur' %}",
+                    data: {
+                        "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                        "compteur": "{{compteur.devEUI}}"
+                    },
+                    success: function(){
+                        Swal.fire(
+                          'Supprimé!',
+                          'Compteur supprimé.',
+                          'success'
+                        );
+                        window.location.href = "{% url  'elec_meter:liste_compteurs' %}";
+                    },
+                    error: function(){alert("Erreur ajax");}
+                });
+              }
+            });
+
+        });
+		});
+		$("#btnRechergeUnites").click(function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:recharger_compteur' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"compteur": "{{compteur.devEUI}}",
+					"montant_recharge": $("#montant_a_recharge").val()
+				},
+				success: function(reponse){
+					alert(reponse["message"]);
+					document.location.reload();
+				},
+				error: function(){alert("Erreur ajax !")}
+			});
+		});
+		$("#btnTransfertUnites").click(function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:transfert' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"compteur1": "{{compteur.devEUI}}",
+					"compteur2": $("#beneficiaire").val(),
+					"montant": $("#mtn_transfert").val()
+				},
+				success: function(reponse){
+					alert(reponse["message"]);
+					document.location.reload();
+				},
+				error: function(){alert("Erreur ajax !")}
+			});
+		});
+	</script>
+	<script>
+		$("#boutonEmprunterUnites").on("click",function(){
+			$.ajax({
+				type: "post",
+				"url": "{% url 'elec_meter:emprunter_unites' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"deveui_client":"{{compteur.devEUI}}",
+					"montant_emprunt": $("#montant_emprunt").val()
+				},
+				success: function(reponse){
+					alert(reponse["message"]);
+					document.location.reload();
+				},
+				error: function(){
+					alert("erreur");
+				}
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#menuCompteur").addClass('active');
+			var lat = "{{compteur.abonnement.lat_machine}}".replace(",",".");
+			var lon = "{{compteur.abonnement.lon_machine}}".replace(",",".");
+			$("#id_latitude").val(lat);
+			$("#id_longitude").val(lon);
+			$("#id_latitude").on("input",function(){lat=$(this).val();});
+			$("#id_latitude").on("input",function(){lon=$(this).val();});
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:refresh_data' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"deveui": "{{compteur.devEUI}}",
+				},
+				success: function(donnees){console.log(donnees);},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+	</script>
+
+
+{% endblock %}
+

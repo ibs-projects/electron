@@ -1,0 +1,192 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Détails: client {{client.nom_client}} - Interactiv {% endblock %}
+{% block page %}Détails: client {{client.nom_client}} {{client.prenom_client}} {% endblock %}
+{% block titre %} {{client.nom_client}} {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+	<div class="modal fade" id="creerAbonnement" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="creerAbonnementModal">Créer un abonnement </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="msg"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="form-control-label">Numéro du client:</label>
+						<input type="text" value="{{client.code_client}}"  class="form-control" id="num_client">
+					</div>
+					<div class="form-group">
+						<label class="form-control-label">Numéro du compteur:</label>
+						<input type="text"  class="form-control" id="id_compteur">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnCreerAbonnement">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+    <div class="row">
+		<div class="col-lg-12 col-xl-4 col-md-12 col-sm-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Profile0</h3>
+				</div>
+				<div class="card-body">
+					<div class="text-center">
+						<div class="userprofile ">
+							<div class="userpic  brround">
+								{% if client.photo_client == '' %}
+									<img src="{% static 'assets/images/users/female/5.jpg' %}" alt="" class="userpicimg">
+								{% else %}
+									<img src="{{client.photo_client.url}}" alt="" class="userpicimg">
+								{% endif %}
+							</div>
+							<h3 class="username mb-2">{{client.prenom_client}} {{client.nom_client}}</h3>
+							<p class="mb-1">Client</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-12 col-xl-8 col-md-12 col-sm-12">
+			<div class="card">
+				<div class="card-header">
+					<h3 class="card-title">Edit Profile</h3>
+				</div>
+				<div class="card">
+					<div class="card-body pb-0">
+						<div class="tab-content" id="myTabContent">
+							<div class="tab-pane fade active show" id="tabs-icons-text-1" role="tabpanel" aria-labelledby="tabs-icons-text-1-tab">
+								<div class="table-responsive mb-3">
+									<table class="table row table-borderless w-100 m-0 border">
+										<tbody class="col-lg-6 p-0">
+											<tr>
+												<td><strong>Nom du client :</strong> {{client.nom_client}}</td>
+											</tr>
+											<tr>
+												<td><strong>Prénom du client :</strong> {{client.prenom_client}}</td>
+											</tr>
+											<tr>
+												<td><strong>Ville :</strong> {{client.ville_client.nom_ville}}</td>
+											</tr>
+											<tr>
+												<td><strong>Adresse :</strong>{{client.adresse_client}} </td>
+											</tr>
+
+										</tbody>
+										<tbody class="col-lg-6 p-0">
+											<tr>
+												<td><strong>Email :</strong> {{client.email}}</td>
+											</tr>
+											<tr>
+												<td><strong>Téléphone :</strong> {{client.tel_client}}</td>
+											</tr>
+											<tr>
+												<span style="display:none" id="span_code">{{client.code_client}}</span>
+												{% if client.code_client == None %}
+													<td><strong>Code d'abonnement :</strong> Non généré</td>
+												{% else %}
+													<td><strong>Code client :</strong> {{client.code_client}}</td>
+												{% endif %}
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<h4 class="mt-5"><strong>Actions</strong></h4>
+								<div>
+									<a href="{% url 'elec_meter:edition_client' client.id %}" class="btn btn-success mt-1">Editer informations</a>
+									<a href="#" class="btn btn-danger mt-1">Supprimer profile</a>
+									<a href="{% url 'elec_meter:nouvel_abonnement' 'client' client.code_client %}"  class="fa fa-plus mt-1">Créer un abonnement</a>
+								</div>
+								<h4 class="mt-5"><strong>Infos abonnement</strong></h4>
+								<div>
+									<div class="expanel expanel-success">
+										<div class="expanel-heading clearfix">Compteurs
+											<div class="float-right">
+												<button class="btn btn-sm btn-success" type="button" data-toggle="collapse" data-target="#collapse03"
+													aria-expanded="false" aria-controls="collapse03"><i class="fa fa-bars"></i></button>
+											</div>
+										</div>
+										<div class="expanel-body collapse" id="collapse03">
+											<table class="table">
+												<thead>
+												  <tr>
+													<th>Numéro du compteur</th>
+													<th>Code du compteur</th>
+													<th>Ville</th>
+													<th>Adresse</th>
+												  </tr>
+												</thead>
+												<tbody>
+												{% for a in abonnements %}
+												  <tr>
+
+														  <td>{{a.compteur.devEUI}}</td>
+													      <td>{{a.compteur.code_secret}}</td>
+														  <td>{{a.compteur.ville_machine}}</td>
+														  <td>{{a.compteur.adr_machine}}</td>
+												  </tr>
+												{% endfor %}
+												</tbody>
+											</table>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+		</div>
+
+	</div>
+	</div>
+{% endblock %}
+{% block js %}
+    <!-- Notifications js -->
+	<script>
+		$(document).ready(function(){
+			var code = $("#span_code").text();
+			if(code=="None"){
+				$("#editer_code").text("Générer code");
+			}else{
+				$("#editer_code").css({
+					"display":none
+				});
+			}
+			$("#editer_code").on("click",function(){
+				$.ajax({
+					url: "{% url 'elec_meter:regeneration_code' %}",
+					type: "post",
+					data: {"csrfmiddlewaretoken":"{{ csrf_token }}","id_client":"{{client.id}}"},
+					success: function(reponse){
+						alert(reponse["message"]);
+						document.location.reload();
+					},
+					error: function(reponse){
+						alert(reponse["message"]);
+					}
+				});
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$("#menuClients").addClass('active');
+		});
+	</script>
+    <script src="{% static 'assets/plugins/notify-growl/js/rainbow.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/sample.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/jquery.growl.js' %}"></script>
+    <script src="{% static 'assets/plugins/notify-growl/js/notifIt.js' %}"></script>
+{% endblock %}

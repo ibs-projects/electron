@@ -1,0 +1,163 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Liste des clients - Interactiv {% endblock %}
+{% block page %}Compteurs {% endblock %}
+{% block titre %} Transaction du compteur {{compteur}} {% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+<style>
+	tr[data-href]{
+		cursor: pointer;
+	}
+</style>
+{% endblock %}
+{% block add %}{% endblock %}
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+				<div class="card-header  pb-0">
+					<h3 class="card-title">Transactions</h3>
+				</div>
+				<div class="card-body">
+					<div class="panel panel-primary">
+						<div class="tab-menu-heading">
+							<div class="tabs-menu ">
+								<!-- Tabs -->
+								<ul class="nav panel-tabs">
+									<li><a href="#tab10" class="active" data-toggle="tab">Toutes les transactions</a></li>
+									<li class=""><a href="#tab11" data-toggle="tab">Recharges unités</a></li>
+									<li><a href="#tab21" data-toggle="tab">Transferts unités</a></li>
+								</ul>
+							</div>
+						</div>
+						<div class="panel-body tabs-menu-body">
+							<div class="tab-content">
+								<div class="tab-pane active " id="tab10">
+									<div class="table-responsive">
+										<table id="datatable" class="table table-striped table-bordered text-nowrap w-100">
+											<thead>
+												<tr>
+													<th class="wd-15p">Date</th>
+													<th class="wd-15p">Type transaction</th>
+													<th class="wd-15p">Montant</th>
+													<th class="wd-15p">Bénéficiaire</th>
+													<th class="wd-15p">Etat</th>
+												</tr>
+											</thead>
+											<tbody>
+											{% for t in toutes %}
+												<tr data-href="#">
+													<td>{{t.effectue_le}}</td>
+													<td>{{t.type_transaction}}</td>
+													<td>{{t.montant}}</td>
+													<td>{{t.benef}}</td>
+													<td>Etat</td>
+												</tr>
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="tab-pane " id="tab11">
+									<div class="table-responsive">
+										<table id="datatables" class="table table-striped table-bordered text-nowrap w-100">
+											<thead>
+												<tr>
+													<th class="wd-15p">Date</th>
+													<th class="wd-15p">Montant</th>
+													<th class="wd-15p">Code recharge</th>
+													<th class="wd-15p">Etat</th>
+												</tr>
+											</thead>
+											<tbody>
+											{% for recharge in recharges %}
+												<tr data-href="#">
+													<td>{{recharge.date_recharge}}</td>
+													<td>{{recharge.montant_recharge}}</td>
+													<td>{{recharge.code_recharge}}</td>
+													{% if recharge.code_utilise %}
+														<td>Code utilisé</td>
+													{% else %}
+														<td>Code non utilisé</td>
+													{% endif %}
+												</tr>
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<div class="tab-pane  " id="tab21">
+									<div class="table-responsive">
+										<table id="datatables2" class="table table-striped table-bordered text-nowrap w-100">
+											<thead>
+												<tr>
+													<th class="wd-15p">Date</th>
+													<th class="wd-15p">Montant</th>
+													<th class="wd-15p">Equivalent uintés</th>
+													<th class="wd-15p">Bénéficiare</th>
+													<th class="wd-15p">Numéro compteur</th>
+													<th class="wd-15p">Etat</th>
+													<th class="wd-15p">Commentaire</th>
+												</tr>
+											</thead>
+											<tbody>
+											{% for t in transferts %}
+												<tr data-href="#">
+													<td>{{t.jour}} {{t.heure}}</td>
+													<td>{{t.montant}}</td>
+													<td>{{t.equivalence_unites}}</td>
+													<td>{{t.beneficiaire.client.nom_client}}</td>
+													<td>{{t.beneficiaire.devEUI}}</td>
+													<td>{{t.etat}}</td>
+													<td>{{t.comment}}</td>
+												</tr>
+											{% endfor %}
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+	<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap4.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/vfs_fonts.js"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/datatable-2.js' %}"></script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded",() =>{
+			const rows = document.querySelectorAll("tr[data-href]");
+			rows.forEach(row => {
+				row.addEventListener("click", () => {
+					window.location.href = row.dataset.href;
+				});
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$("#menuCompteur").addClass('active');
+		});
+	</script>
+{% endblock %}
+
+

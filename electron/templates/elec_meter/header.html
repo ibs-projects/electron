@@ -1,0 +1,81 @@
+{% load static %}
+<div class="app-header header d-flex">
+					<div class="container">
+						<div class="d-flex">
+						    <a class="header-brand" href="{% url 'elec_meter:home' %}">
+								<img src="{% static 'assets/images/brand/logo_ozangue.png' %}" class="header-brand-img main-logo">
+								<img src="{% static 'assets/images/brand/logo_ozangue.png' %}" class="header-brand-img darklogo" alt="Ozangue">
+								<img src="{% static 'assets/images/brand/icon.png' %}" class="header-brand-img icon-logo" alt="Ozangue">
+							</a><!-- logo-->
+							<a id="horizontal-navtoggle" class="animated-arrow hor-toggle"><span></span></a>
+							<a href="#" data-toggle="search" class="nav-link nav-link  navsearch"><i class="fa fa-search"></i></a><!-- search icon -->
+							<div class="d-flex order-lg-2 ml-auto header-rightmenu">
+
+								<div class="dropdown">
+									<a  class="nav-link icon full-screen-link" id="fullscreen-button">
+										<i class="fe fe-maximize-2"></i>
+									</a>
+								</div><!-- full-screen -->
+								<div class="dropdown header-notify">
+									<a class="nav-link icon" data-toggle="dropdown" aria-expanded="false">
+										<i class="fe fe-bell "></i>
+										<span class="pulse bg-success"></span>
+									</a>
+									<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow ">
+										<a href="#" class="dropdown-item text-center">1 Notification</a>
+										<div class="dropdown-divider"></div>
+										<a href="#" class="dropdown-item d-flex pb-3">
+											<div class="notifyimg bg-green">
+												<i class="fe fe-mail"></i>
+											</div>
+											<div>
+												<strong>Message</strong>
+												<div class="small text-muted">12 mins ago</div>
+											</div>
+										</a>
+										<div class="dropdown-divider"></div>
+										<a href="#" class="dropdown-item text-center">Toutes les notifications</a>
+									</div>
+								</div><!-- notifications -->
+								<div class="dropdown header-user">
+									<a class="nav-link leading-none siderbar-link"  data-toggle="sidebar-right" data-target=".sidebar-right">
+										<span class="mr-3 d-none d-lg-block ">
+											<span class="text-gray-white"><span class="ml-2">{{request.user.agent.prenom_agent}}</span></span>
+										</span>
+										<span class="avatar avatar-md brround"><img src="{% static 'assets/images/users/avatars/19.png' %}" alt="Profile-img" class="avatar avatar-md brround"></span>
+									</a>
+									<div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow">
+										<div class="header-user text-center mt-4 pb-4">
+											<span class="avatar avatar-xxl brround"><img src="{% static 'assets/images/users/avatars/19.png' %}" alt="Profile-img" class="avatar avatar-xxl brround"></span>
+											<a href="#" class="dropdown-item text-center font-weight-semibold user h3 mb-0">Alison</a>
+											<small>Web Designer</small>
+										</div>
+										<a class="dropdown-item" href="#">
+											<i class="dropdown-icon mdi mdi-account-outline "></i> Spruko technologies
+										</a>
+										<a class="dropdown-item" href="#">
+											<i class="dropdown-icon  mdi mdi-account-plus"></i> Add another Account
+										</a>
+										<div class="card-body border-top">
+											<div class="row">
+												<div class="col-6 text-center">
+													<a class="" href=""><i class="dropdown-icon mdi  mdi-message-outline fs-30 m-0 leading-tight"></i></a>
+													<div>Inbox</div>
+												</div>
+												<div class="col-6 text-center">
+													<a class="" href=""><i class="dropdown-icon mdi mdi-logout-variant fs-30 m-0 leading-tight"></i></a>
+													<div>Sign out</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div><!-- profile -->
+								<div class="dropdown">
+									<a  class="nav-link icon siderbar-link" data-toggle="sidebar-right" data-target=".sidebar-right">
+										<i class="fe fe-more-horizontal"></i>
+									</a>
+								</div><!-- Right-siebar-->
+							</div>
+						</div>
+					</div>
+				</div>

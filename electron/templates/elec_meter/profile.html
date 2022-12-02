@@ -1,0 +1,75 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Profile utilisateur {{utilisateur.nom_agent}} - Interactiv {% endblock %}
+{% block page %}Profile utilisateur {{utilisateur.nom_agent}} {% endblock %}
+{% block titre %} {{utilisateur.nom_agent}} {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12 col-xl-4 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="userprofile ">
+                            <a href="#">
+                                {% if request.user.agent.photo_agent == '' %}
+                                    <img src="{% static 'assets/images/users/female/5.jpg' %}" class="avatar-xxl rounded-circle" alt="profile">
+                                {% else %}
+                                    <img src="{{utilisateur.photo_agent.url}}" class="avatar-xxl rounded-circle" alt="profile">
+                                {% endif %}
+                            </a>
+                            <h3 class="username mb-2">{{utilisateur.prenom_agent | title}} {{utilisateur.nom_agent}}</h3>
+                            <p class="mb-1">{{utilisateur.profile}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12 col-xl-8 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Profile</h3>
+                </div>
+                <div class="table-responsive mb-3">
+                                    <table class="table row table-borderless w-100 m-0 border">
+                                        <tbody class="col-lg-6 p-0">
+                                            <tr>
+                                                <td><strong>Nom:</strong> {{utilisateur.nom_agent}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Prénom :</strong> {{utilisateur.prenom_agent}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Matricule :</strong> {{utilisateur.matricule}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Ville :</strong> {{utilisateur.ville_agent.nom_ville}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Adresse :</strong> {{utilisateur.adr_agent}}</td>
+                                            </tr>
+                                        </tbody>
+                                        <tbody class="col-lg-6 p-0">
+                                            <tr>
+                                                <td><strong>Profile :</strong> {{utilisateur.profile}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Email :</strong> {{utilisateur.user.email}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Téléphone :</strong> {{utilisateur.user.telephone}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Etat :</strong> {% if utilisateur.user.is_active == True %}Actif{% else %}Désactivé{% endif %}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                <div class="card-footer text-right">
+                    <a href="{% url 'elec_meter:editer_profile' utilisateur.id %}" {% if not request.user.agent.matricule == utilisateur.matricule  %}desabled{% endif %} class="btn btn-success mt-1">Editer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

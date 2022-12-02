@@ -1,0 +1,670 @@
+{% load static %}
+<div class="horizontal-main hor-menu clearfix">
+	<div class="horizontal-mainwrapper container clearfix">
+		<nav class="horizontalMenu clearfix">
+			<ul class="horizontalMenu-list">
+				<li aria-haspopup="true"><a href="{% url 'elec_meter:home' %}" class=""><i class="typcn typcn-arrow-move-outline"></i> Tableau de bord</a></li>
+				<li aria-haspopup="true"><a id="menuCompteur" href="#" class="sub-icon "><i class="typcn typcn-device-laptop"></i> Compteurs <i class="fa fa-angle-down horizontal-icon"></i></a>
+					<div class="horizontal-megamenu clearfix">
+						<div class="container">
+							<div class="mega-menubg">
+								<div class="row">
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:nouveau_compteur' %}">Ajouter compteurs</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_compteurs' %}">Liste des compteurs</a></li>
+
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="#" data-toggle="modal" data-target="#uploadFichierCompteur">Ajouter un fichier de compteurs</a></li>
+										</ul>
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:voir_carte_compteur' %}" >Carte des compteurs</a></li>
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:nouvelle_gateway' %}">Ajouter gateways</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_gateways' %}">Liste des gateways</a></li>
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="#" data-toggle="modal" data-target="#modalEquivalence">Créer un contrat</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:contrats' %}" >Liste des contrats</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li aria-haspopup="true"><a href="#" id="menuUnites" class="sub-icon "><i class="typcn typcn-point-of-interest"></i> Unités <i class="fa fa-angle-down horizontal-icon"></i></a>
+					<div class="horizontal-megamenu clearfix">
+						<div class="container">
+							<div class="mega-menubg">
+								<div class="row">
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="#" data-toggle="modal" data-target="#modalCreditSEEG">Recharger compte SEEG</a></li>
+											<li aria-haspopup="true"><a href="#" data-toggle="modal" data-target="#modalAjoutUnitesCompteur">Recharger un compteur</a></li>
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:transfert_unites' %}" >Transférer des unités</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li aria-haspopup="true"><a href="#" id="menuClients" class="sub-icon "><i class="typcn typcn-group-outline"></i> Gestion des clients <i class="fa fa-angle-down horizontal-icon"></i></a>
+					<div class="horizontal-megamenu clearfix">
+						<div class="container">
+							<div class="mega-menubg">
+								<div class="row">
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="#" data-toggle="modal" data-target="#ajoutProvinceModal">Ajouter province</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_province' %}">Liste provinces</a></li>
+
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true" ><a class="charger_provinces" href="#" data-toggle="modal" data-target="#ajoutVilleModal">Ajouter ville</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_villes' %}">Liste villes</a></li>
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:nouveau_client' %}">Ajouter clients</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_clients' %}">Liste clients</a></li>
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:nouvel_abonnement' 'nouveau' 'compteur' %}" >Créer un abonnement</a></li>
+											<!--<li aria-haspopup="true"><a href="blog.html">Abonnements</a></li> -->
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+				<li aria-haspopup="true"><a href="#" class=""><i class="typcn typcn-chart-pie"></i> Analyses</a></li>
+				<li aria-haspopup="true"><a id="notifications" href="{% url 'elec_meter:notifications' %}" class=""><i class="fa fa-bell-o"></i> Notifications</a></li>
+				<li aria-haspopup="true"><a href="#" class="sub-icon "><i class="typcn typcn-user"></i> Utilisateurs <i class="fa fa-angle-down horizontal-icon"></i></a>
+					<div class="horizontal-megamenu clearfix">
+						<div class="container">
+							<div class="mega-menubg">
+								<div class="row">
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:register' %}">Ajouter utilisateur</a></li>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:liste_agents' %}">Liste utilisateurs</a></li>
+
+										</ul>
+									</div>
+									<div class="col-lg-3 col-md-12 col-xs-12 link-list">
+										<ul>
+											<li aria-haspopup="true"><a href="{% url 'elec_meter:gestion_droits' %}">Gestion des droits</a></li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</nav>
+		<!--Nav end -->
+	</div>
+</div>
+
+<div class="modal fade" id="ajoutProvinceModal" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalAjoutProvince">Nouvelle province</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_province" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="code_province" class="form-control-label">Code province:</label>
+						<input type="text" class="form-control" id="code_province">
+					</div>
+					<div class="form-group">
+						<label for="nom_province" class="form-control-label">Nom province:</label>
+						<input type="text" class="form-control" id="nom_province">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="enrProv">Enregistrer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="ajoutVilleModal" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="example-Modal3">Nouvelle ville</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_ville" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="nom_ville" class="form-control-label">Nom ville:</label>
+						<input type="text" class="form-control" id="nom_ville">
+					</div>
+					<div class="form-group">
+						<label class="form-label">Province</label>
+						<select name="type_compteur" id="id_province" class="id_province form-control custom-select">
+
+						</select>
+					</div>
+
+
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="enrgVille">Enregistrer</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalCreditSEEG" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalCreditSEEG">Recharger compte SEEG</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="code_province" class="form-control-label">Montant:</label>
+						<input type="number" step="0.001" class="form-control" id="montant_recharge_seeg">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnCrediterCompteSEEG">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalAjoutUnitesCompteur" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalAjoutUnitesCompteur">Recharger un compteur</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_compteur" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="code_province" class="form-control-label">Compteur:</label>
+						<input type="text"  class="form-control" id="num_compteur">
+					</div>
+					<div class="form-group">
+						<label for="montant_recharge_compteur" class="form-control-label">Montant:</label>
+						<input type="number" step="0.001" class="form-control" id="montant_recharge_compteur">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnAchatUnites">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="modalCrediterCompteur" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalCrediterCompteur">Recharger un compteur</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_credit" style="text-align:center;display:none;"></p>
+				<form id="formRechargeUnites">
+					{% csrf_token %}
+					<div class="form-group">
+						<label for="compteur_a_crediter" class="form-control-label">Numéro du compteur</label>
+						<input type="text"  class="form-control" id="compteur_a_crediter">
+					</div>
+					<div class="form-group">
+						<label for="code_recharge" class="form-control-label">Code de recharge</label>
+						<input type="text" class="form-control" id="code_recharge">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnRechargeUnites">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="uploadFichierCompteur" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="uploadFichierCompteurModal">Téléchargerment d'un fichier de compteurs </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form enctype="multipart/form-data" type="post" id="uploadExcelFileForm">
+					{% csrf_token %}
+					<div class="form-group">
+						{{uploadExcelMeterFile}}
+					</div>
+					<div >
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+						<button type="submit" class="btn btn-primary" id="uploadExcelFileButton">Valider</button>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer"></div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="modalEquivalence" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalEquivalence">Créer un Contrat </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="id_message_equivalence" style="text-align:center;display:none;"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<div class="form-group">
+							<label for="numerocontrat" class="form-control-label">Numéro du contrat:</label>
+							<input type="text"  class="form-control" id="numerocontrat">
+						</div>
+						<div class="form-group">
+							<label for="type_compteur" class="form-label">Type de compteur</label>
+							<select name="type_compteur" id="type_compteur" class="form-control custom-select">
+								<option value="Mono phasé">Mono phasé</option>
+								<option value="Tri phasé">Tri phasé</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="cp_puissance" class="form-label">Tarif BT</label>
+							<select name="puissance" id="cp_puissance" class="form-control custom-select">
+								{% for p in cp_puissances %}
+									<option value="{{p}}">{{p}}</option>
+								{% endfor %}
+							</select>
+						</div>
+
+
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnEquivalence">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<div class="modal fade" id="modalTransfert" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="idModalTransfert">Transfert de crédit </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div>
+				{% if form_transfert.errer == True %}
+					<p>{{form_transfert.err_msg}}</p>
+				{% endif %}
+			</div>
+			<div class="modal-body">
+				<form action="" method="post">
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="form-label">{{form_transfert.expediteur.label_tag}}</label>
+						{{form_transfert.expediteur}}
+					</div>
+					<div class="form-group">
+						<label class="form-label">{{form_transfert.beneficiaire.label_tag}}</label>
+								{{form_transfert.beneficiaire}}
+					</div>
+					<div class="form-group">
+						<label class="form-label">{{form_transfert.unites_a_transferer.label_tag}}</label>
+								{{form_transfert.unites_a_transferer}}
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+						<button type="submit" class="btn btn-primary" >Valider</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade" id="nouvelAbonnementForm" tabindex="-1" role="dialog"  aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="creerAbonnementModal">Créer un abonnement </h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p id="msg"></p>
+				<form>
+					{% csrf_token %}
+					<div class="form-group">
+						<label class="form-control-label">Numéro du client:</label>
+						<input type="text"  class="form-control" id="numero_client">
+					</div>
+					<div class="form-group">
+						<label class="form-control-label">Numéro du compteur:</label>
+						<input type="text"  class="form-control" id="numero_compteur">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+				<button type="button" class="btn btn-primary" id="btnnouvelAbonnement">Valider</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'assets/js/vendors/jquery-3.2.1.min.js' %}"></script>
+<script>
+	$(document).ready(function(){
+		$("#enrProv").on("click",function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:ajouter_province' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"code_province": $("#code_province").val(),
+					"nom_province": $("#nom_province").val()
+				},
+				success: function(reponse){
+					if(reponse["statut"] == "succes"){
+						$("#id_message_province").text(reponse["message"]);
+						$("#id_message_province").show();
+					}else{
+						$("#id_message_province").text(reponse["message"]);
+						$("#id_message_province").show();
+					}
+					setTimeout(function(){document.location.reload();},4000000);
+				},
+				error: function(){
+					alert("Erreur");
+				}
+			});
+		});
+		$("#btnCrediterCompteSEEG").on("click",function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:recharger_credit_seeg' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"montant_recharge": $("#montant_recharge_seeg").val()
+				},
+				success: function(reponse){alert(reponse["message"]);console.log(reponse["message"]);},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+		$("#btnAchatUnites").on("click",function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:recharger_compteur' %}",
+				data: {
+					"montant_recharge": $("#montant_recharge_compteur").val(),
+					"compteur": $("#num_compteur").val(),
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}"
+				},
+				success: function(reponse){
+					alert(reponse["message"]);
+					document.location.reload();
+				},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+		$("#btnCrediterCompteur").on("click",function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:crediter_compteur' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"devEUI": $("#compteur_a_crediter").val(),
+					"code_recharge": $("#code_recharge").val()
+				},
+				success: function(reponse){
+					alert(reponse["message"]);
+					document.location.reload();
+				},
+				error: function(){alert("Erreur ajax");}
+			});
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function(){
+		$(".charger_provinces").on("click",function(){
+			$.ajax({
+				type: "get",
+				url: "{% url 'elec_meter:charger_provinces' %}",
+				dataType: "json",
+				success: function(provinces){
+					var sel = document.getElementById("id_province");
+					$("#id_province").find('option').remove().end();
+					for(i=0;i<provinces.length;i++){
+						var opt = document.createElement("option");
+						opt.setAttribute("id",provinces[i]["id"]);
+						opt.innerHTML = provinces[i]["nom_province"];
+						sel.appendChild(opt);
+					}
+				},
+				error: function(){
+					alert("Erreur ajax");
+				}
+
+			});
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function(){
+		$("#enrgVille").on("click",function(){
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:ajouter_ville' %}",
+				data: {
+					"csrfmiddlewaretoken" : "{{  csrf_token  }}",
+					"nom_ville": $("#nom_ville").val(),
+					"province": $('#id_province option:selected').attr("id")
+				},
+				success: function(reponse){
+					$("#id_message_ville").text(reponse["message"]);
+					$("#id_message_ville").show();
+					setTimeout(function(){document.location.reload();},4000000);
+				},
+				error: function(){
+					alert("Erreur ajax");
+				}
+
+			});
+		});
+
+	});
+</script>
+
+<script>
+	$("#btnEquivalence").on("click",function(){
+		$.ajax({
+			type: "post",
+			url: "{% url 'elec_meter:creer_contrat' %}",
+			data: {
+				"numerocontrat": $("#numerocontrat").val(),
+				"credits": $("#credits").val(),
+				"puissance": $('#cp_puissance option:selected').val(),
+				"type_compteur": $('#type_compteur option:selected').val(),
+				"csrfmiddlewaretoken" : "{{  csrf_token  }}"
+			},
+			success: function(reponse){
+				$("#id_message_equivalence").text(reponse["message"]);
+				$("#id_message_equivalence").show();
+				if(reponse["statut"]=="succes"){
+					document.location.reload();
+				}
+			},
+			error: function(){}
+		});
+	});
+
+</script>
+
+<script>
+	$("#btnRechargeUnites").on("click",function(){
+		$.ajax({
+			type: "post",
+			url: "{% url 'elec_meter:recharge_unites' %}",
+			data: {
+				"compteur_a_crediter": $("#compteur_a_crediter").val(),
+				"code_recharge": $("#code_recharge").val(),
+				"csrfmiddlewaretoken" : "{{  csrf_token  }}"
+			},
+			success: function(reponse){
+				alert(reponse["message"]);
+				document.location.reload();
+			}
+		});
+	});
+
+	$("#btnTransfert").on("click",function(){
+		$.ajax({
+			type: "post",
+			url: "{% url 'elec_meter:transfert' %}",
+			data: {
+				"compteur1": $("#compteur1").val(),
+				"compteur2": $("#compteur2").val(),
+				"montant": $("#montant_transfert").val(),
+				"csrfmiddlewaretoken" : "{{  csrf_token  }}"
+			},
+			success: function(reponse){
+			alert(reponse["message"]);
+				$("#id_message_transfert").text(reponse["message"]);
+				$("#id_message_transfert").show();
+			},
+			error: function(xhr, status, errorThrown){
+				 alert("Erreur ajax");
+			}
+		});
+	});
+</script>
+
+<script>
+	$(document).ready(function(){
+		$("#btnnouvelAbonnement").on("click",function(){
+		$.ajax({
+			type: "post",
+			url: "{% url 'elec_meter:creation_abonnement' %}",
+			data: {
+				"csrfmiddlewaretoken":"{{ csrf_token }}",
+				"num_client": $("#numero_client").val(),
+				"compteur": $("#numero_compteur").val(),
+			},
+			success: function(reponse){
+				if(reponse["statut"]=="succes"){
+					alert(reponse["message"]);
+					document.location.reload()
+				}else{
+					alert(reponse["message"]);
+				}
+			},
+			error: function(){
+			}
+		});
+	});
+	});
+</script>
+
+<script>
+	$(document).ready(function(){
+		$("#uploadExcelFileForm").submit(function(e) {
+			e.preventDefault();
+			var data = new FormData();
+			data.append('fichier_excel',$("input[id^='id_fichier_excel']")[0].files[0]);
+			data.append('csrfmiddlewaretoken',"{{csrf_token}}");
+			$.ajax({
+				type: "post",
+				url: "{% url 'elec_meter:telecharger_fichier_compteur' %}",
+				processData: false,
+				contentType: false,
+				mimeType: "multipart/form-data",
+				data: data,
+				success: function(reponse){
+					if(reponse["statut"]=="succes"){
+						document.loaction.reload();
+					}else{
+						alert(reponse["statut"]);
+					}
+				},
+				error: function(){alert("Erreur ajax");},
+			});
+		});
+	});
+</script>

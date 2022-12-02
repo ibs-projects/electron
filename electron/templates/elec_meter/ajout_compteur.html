@@ -1,0 +1,152 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Ajout d'un compteur - Interactiv {% endblock %}
+{% block page %}Compteurs {% endblock %}
+{% block titre %} Enregistrer compteur {% endblock %}
+{% block add %}{% endblock %}
+{% block css %}
+    <link href="{% static 'assets/plugins/form-wizard/css/form-wizard.css' %}" rel="stylesheet" />
+    <link href="{% static 'assets/plugins/formwizard/smart_wizard.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/plugins/formwizard/smart_wizard_theme_dots.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+		<div class="col-lg-12">
+			<div class="card">
+				<div class="card-header pb-0">
+					<h3 class="card-title">Enregistrement d'un compteur</h3>
+				</div>
+				<div>
+					{% if messages %}
+						<ul class="messages">
+							{% for message in messages %}
+								<li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+							{% endfor %}
+						</ul>
+                	{% endif %}
+				</div>
+				<div class="card-body">
+					{% if error_value1 == 'erreur1' %}
+						<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+						</button>
+							{{machineform.errors.devEUI}}
+						</div>
+					{% endif %}
+					{% if error_value2 == 'erreur2' %}
+						<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">×
+						</button>
+							{{clientform.non_field_errors}}
+							{{clientform.errors}}
+						</div>
+					{% endif %}
+
+					<form action="" method="post">
+						{% csrf_token %}
+						<div class="row">
+							<div class="col-xl-12">
+							<div class="form-group">
+								<label class="form-label">{{machineform.devEUI.label_tag}}</label>
+								{{machineform.devEUI}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">{{machineform.devName.label_tag}}</label>
+								{{machineform.devName}}
+							</div>
+							<div class="form-group">
+								<label class="form-label">Ville du client</label>
+								<select name="ville_compteur" id="ville_compteur" class="form-control custom-select">
+									{% for ville in villes %}
+										<option value="{{ville.id}}">{{ville.nom_ville}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="form-label">Type compteur</label>
+								<select name="type_compteur" id="typecompteur" class="form-control custom-select">
+									<option>-- Choisir le type --</option>
+									{% for t in types_compteur %}
+										<option value="{{t}}">{{t}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group">
+								<label class="form-label">Numéro du contrat</label>
+								<select name="contrat" id="contrat" class="form-control custom-select">
+									<option>-- Choisir contrat-- </option>
+								</select>
+							</div>
+						</div>
+						</div>
+						<div style="margin-top:10px;">
+                        <div class="btn-list text-center">
+                            <button class="btn btn-primary" id="enrgGateway" type="submit">Enregistrer</button>
+                        </div>
+                    </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+{% endblock %}
+{% block js %}
+    <script src="{% static 'assets/plugins/formwizard/jquery.smartWizard.js' %}"></script>
+    <script src="{% static 'assets/plugins/formwizard/fromwizard.js' %}"></script>
+
+    <!--Accordion-Wizard-Form js-->
+    <script src="{% static 'assets/plugins/accordion-Wizard-Form/jquery.accordion-wizard.min.js' %}"></script>
+
+    <!--Advanced Froms js-->
+    <script src="{% static 'assets/js/advancedform.js' %}"></script>
+
+	<script>
+		$(document).ready(function(){
+			$("#id_adr_client").on("input",function(){
+				var val = $("#id_adr_client").val();
+				$("#id_adr_machine").val(val);
+			});
+			$("#ville_client").on("change",function(){
+				var c = document.getElementById("ville_compteur");
+				c.value = document.getElementById("ville_client").value;
+			});
+			$("#id_devEUI").on("input",function(){
+				if(document.getElementById("id_devEUI").value==""){
+					document.getElementById("id_devName").value = "";
+				}else{
+					document.getElementById("id_devName").value = "elec_"+document.getElementById("id_devEUI").value;
+				}
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#typecompteur").change(function(){
+				var selectedType = $(this).children("option:selected").val();
+				$.ajax({
+					type: "post",
+					url: "{% url 'elec_meter:precharger_contrats' %}",
+					data: {"typeSelected":selectedType,"csrfmiddlewaretoken" : "{{  csrf_token  }}",},
+					dataType: "json",
+					success: function(contrats){
+						var sel = document.getElementById("contrat");
+						$("#contrat").find('option').remove().end();
+						if(contrats.length==0){
+							alert("Veuillez choisir un numéro de contrat avant de continuer.");
+						}else{
+							for(i=0;i<contrats.length;i++){
+								var opt = document.createElement("option");
+								opt.setAttribute("id",contrats[i]["id"]);
+								opt.innerHTML = contrats[i]["numero"];
+								sel.appendChild(opt);
+							}
+						}
+					}
+				});
+			});
+		});
+	</script>
+{% endblock %}
+

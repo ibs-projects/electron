@@ -1,0 +1,107 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Emprunt du compteur {{deveui}} - Interactiv {% endblock %}
+{% block page %}<a href="#">Emprunts</a>{% endblock %}
+{% block titre %} Emprunts du compteur  {{deveui}} {% endblock %}
+{% block add %}{% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+	<div class="col-md-12 col-lg-12">
+		<div class="card">
+			<div class="card-header pb-0">
+				<h3 class="card-title">Panel with heading</h3>
+			</div>
+			<div class="card-body">
+				<div class="row mt-4">
+					<div class="col-md-6">
+						<div class="expanel expanel-default">
+							<div class="expanel-heading">Panel heading without title</div>
+							<div class="expanel-body">
+								Panel content
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="expanel expanel-default">
+							<div class="expanel-heading">
+								<div class="expanel-title">Panel title</div>
+							</div>
+							<div class="expanel-body">
+								Panel content
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- col end -->
+  </div>
+{% endblock %}
+{% block js %}
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+    <script>
+    $(document).ready(function(){
+        $(".delete").on("click",function(){
+            var id_contrat = $(this).attr("id_contrat");
+             Swal.fire({
+              title: 'Etes vous sur?',
+              text: "Vous etes sur le point de supprimer ce contrat!",
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              cancelButtonText: 'Non',
+              confirmButtonText: 'Oui'
+            }).then((result) => {
+              if (result.isConfirmed) {
+
+                $.ajax({
+                    type: "post",
+                    url: "{% url 'elec_meter:supprimer_contrat' %}",
+                    data: {
+                        "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                        "id_contrat": id_contrat
+                    },
+                    success: function(){
+                        Swal.fire(
+                          'Supprimé!',
+                          'Contrat supprimé.',
+                          'success'
+                        );
+                        window.location.reload();
+                    },
+                    error: function(){alert("Erreur ajax");}
+                });
+              }
+            });
+        });
+       $(".edit").on("click",function(){
+        var id_contrat = $(this).attr("id_contrat");
+        $.ajax({
+          type: "post",
+          url: "{% url 'elec_meter:details_contrat' %}",
+          data: {"contrat":id_contrat,"csrfmiddlewaretoken" : "{{  csrf_token  }}",},
+          success: function(contrat){console.log(contrat);},
+          error: function(){alert("Erreur ajax");}
+        });
+       });
+    });
+</script>
+<script>
+	$(document).ready(function() {
+		$("#menuCompteur").addClass('active');
+	});
+</script>
+{% endblock %}
+
+

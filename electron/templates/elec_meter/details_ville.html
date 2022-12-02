@@ -1,0 +1,79 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Détails ville {{ville.nom_ville}} - Interactiv {% endblock %}
+{% block page %}Villes {% endblock %}
+{% block titre %} Détails ville {{ville.nom_ville}} {% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row row-cards">
+        <div class="col-sm-12 col-lg-4">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Compteurs</h4>
+                    <h1 class="mb-1 text-dark">{{nb_machines}}</h1>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class="col-sm-12 col-lg-4">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Gateways</h4>
+                    <h1 class="mb-1 ">{{nb_gateways}}</h1>
+                </div>
+            </div>
+        </div><!-- col end -->
+        <div class="col-sm-12 col-lg-4">
+            <div class="card">
+                <div class="card-body iconfont text-center">
+                    <h4>Clients</h4>
+                    <h1 class="mb-1">{{nb_machines}}</h1>
+                </div>
+            </div>
+        </div><!-- col end -->
+    </div>
+
+    <div class="row">
+		<div class="col-md-12 col-lg-12">
+		<div class="card">
+			<div class="card-header pb-0">
+				<div class="card-title">Compteurs</div>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<table id="datatables" class="table table-striped table-bordered text-nowrap w-100">
+						<thead>
+							<tr>
+								<th class="wd-15p">Nom client</th>
+								<th class="wd-15p">Prenom clien</th>
+								<th class="wd-15p">devEUI</th>
+								<th class="wd-20p">Type machine</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for machine in machines %}
+							<tr data-href="{% url 'elec_meter:home' %}">
+								<td>{{machine.client.nom_client}}</td>
+								<td>{{machine.client.prenom_client}}</td>
+								<td>{{machine.devEUI}}</td>
+								<td>{{machine.type_machine}}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- table-wrapper -->
+		</div>
+		<!-- section-wrapper -->
+		</div>
+	</div>
+{% endblock %}
+{% block js %}
+	<script>
+		$(document).ready(function() {
+			$("#menuClients").addClass('active');
+		});
+	</script>
+{% endblock %}
+

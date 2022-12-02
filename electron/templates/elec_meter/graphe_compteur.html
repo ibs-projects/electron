@@ -1,0 +1,37 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Graphes de consommation - compteur {{machine.devEUI}} - Interactiv {% endblock %}
+{% block page %}Compteurs {% endblock %}
+{% block titre %} Graphes de consommation - compteur {{machine.devEUI}} {% endblock %}
+{% block add %}{% endblock %}
+
+
+{% block content %}
+    <div class="col-lg-6 col-md-12">
+								<div class="card">
+									<div class="card-header pb-0">
+										<h3 class="card-title">Single Bar Chart</h3>
+									</div>
+									<div class="card-body">
+										<canvas id="chartjs13" class="h-230 "></canvas>
+									</div>
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-12">
+								<div class="card">
+									<div class="card-header pb-0">
+										<h3 class="card-title">Single Bar Chart</h3>
+									</div>
+									<div class="card-body">
+										<canvas id="chartjs14" class="h-230 "></canvas>
+									</div>
+								</div>
+							</div>
+{% endblock %}
+{% block js %}
+
+    <script src="{% static 'assets/plugins/chart/chart.bundle.js' %}"></script>
+    <script src="{% static 'assets/plugins/chart/utils.js' %}"></script>
+    <script src="{% static 'assets/js/chart.js' %}"></script>
+{% endblock %}
+

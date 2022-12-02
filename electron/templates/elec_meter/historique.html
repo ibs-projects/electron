@@ -1,0 +1,82 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Hisorique des donnés du compteur {{machine.devEUI}} - Interactiv {% endblock %}
+{% block page %}Compteurs {% endblock %}
+{% block titre %} Hisorique des donnés du compteur {{machine.devEUI}} {% endblock %}
+{% block add %}{% endblock %}
+
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-transparent border-0 d-inline-block d-flex justify-content-between">
+                    <h3 style="display:inline-block" class="card-title">Historique</h3>
+                    <div class="d-flex align-items-start">
+                       <input id="champDate" class="mr-2 float-right btn btn-primary btn-sm" value="{{jj | date:'Y-m-d'}}" type="date">
+                        <a href="./historique">
+                            <button class="btn btn-primary"><span><i class="fa fa-undo"></i></span></button>
+                        </a>
+                    </div>
+                </div>
+                <div class="">
+                    <div class="grid-margin">
+                        <div class="">
+                            <div class="table-responsive">
+                                <table class="table card-table table-vcenter text-nowrap  align-items-center">
+                                    <thead class="thead-light">
+                                        <tr>
+                                            <th>Tension</th>
+                                            <th>Courant</th>
+                                            <th>Energie</th>
+                                            <th>Frequence</th>
+                                            <th>Gateway</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for donnee in donnees %}
+                                            <tr>
+                                                <td>{{donnee.tension}}</td>
+                                                <td>{{donnee.courant}}</td>
+                                                <td>{{donnee.energie_active}}</td>
+                                                <td>{{donnee.infos_signal.freq}}</td>
+                                                <td>{{donnee.infos_signal.gwid.gw_id}}</td>
+                                                <td>{{donnee.infos_signal.jour |date:'d M Y'}} {{donnee.infos_signal.heure}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block js %}
+    <script>
+        $(document).ready(function(){
+            $("#champDate").on("change",function(){
+                $.ajax({
+                    type: post,
+
+                    data: {
+                        "csrfmiddlewaretoken" : "{{  csrf_token  }}",
+                        "inputd_date": $("#inputDate").val(),
+                        "num_compteur": {{donnees.infos_signal.machine.devEUI}}
+                    },
+                    succees: function(reponse){},
+                    error: function(){}
+                });
+            });
+        });
+    </script>
+    <script>
+		$(document).ready(function() {
+			$("#menuCompteur").addClass('active');
+		});
+	</script>
+{% endblock %}
+

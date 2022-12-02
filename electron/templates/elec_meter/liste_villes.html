@@ -1,0 +1,72 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Liste des villes - Interactiv {% endblock %}
+{% block page %}<a href="{% url 'elec_meter:liste_villes' %}">Villes</a>{% endblock %}
+{% block titre %} Liste des villes {% endblock %}
+{% block add %}{% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-sm-12">
+            <div class="card">
+                <div class="card-header pb-0 d-inline-block d-flex justify-content-between">
+                    <h3 class="card-title ">Toutes les villes</h3>
+                    <div class="card-options mr-0">
+                        <button id="add__new__list" type="button" class="btn btn-sm btn-primary " data-toggle="modal" data-target="#ajoutVilleModal"><i class="fa fa-plus"></i> Ajouter provinces</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="datatables" class="table table-striped table-bordered text-nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-top-0">ID</th>
+                                    <th scope="col" class="border-top-0">Nom ville</th>
+                                    <th scope="col" class="border-top-0">Province</th>
+                                    <th scope="col" class="border-top-0">Actions </th>
+                                    <th scope="col" class="border-top-0">Infos</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ville in villes %}
+                                <tr>
+                                    <td>{{ville.id}}</td>
+                                    <td>{{ville.nom_ville}}</td>
+                                    <td>{{ville.province.nom_province}}</td>
+                                    <td style="width:50px;">
+                                        <a href="#"><i class="fa fa-edit"></i> Editer</a>
+                                        <a class="text-danger delete" href="#"><i class="fa fa-trash"></i> Supprimer</a>
+                                    </td>
+                                    <td style="width:50px;"><a href="{% url 'elec_meter:details_ville' ville.id %}"><i class="fa fa-info-circle"></i> Details</a> </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div><!-- col end -->
+    </div>
+{% endblock %}
+{% block js %}
+    <script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap4.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/vfs_fonts.js"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/datatable-2.js' %}"></script>
+{% endblock %}
+
+

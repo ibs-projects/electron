@@ -1,0 +1,7 @@
+{% autoescape off %}
+Salut {{ user.agent.nom_agent }},
+Voici votre mot de passe: {{password}}
+Votre mot de matricule: {{matricule}}
+<a href="http://{{ domaine }}{% url 'elec_meter:activate' uidb64=uid token=token %}">Cliquez ici pour confirmer la création de votre compte</a>
+Si vous pensez que ce message ne vous conserne pas, veuillez l'ignorer s'il vous plait.
+{% endautoescape %}

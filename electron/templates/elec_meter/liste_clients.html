@@ -1,0 +1,98 @@
+{% extends 'elec_meter/base.html' %}
+{% load static %}
+{% block title %}Liste des clients - Interactiv {% endblock %}
+{% block page %}Clients {% endblock %}
+{% block titre %} Liste de tous les clients {% endblock %}
+{% block css %}
+	<link href="{% static 'assets/plugins/datatable/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+	<link href="{% static 'assets/plugins/datatable/css/buttons.bootstrap4.min.css' %}"  rel="stylesheet">
+	<link href="{% static 'assets/plugins/datatable/responsivebootstrap4.min.css' %}" rel="stylesheet" />
+<style>
+	tr[data-href]{
+		cursor: pointer;
+	}
+</style>
+{% endblock %}
+{% block add %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+		<div class="col-md-12 col-lg-12">
+		<div class="card">
+			<div class="card-header pb-0 d-inline-block d-flex justify-content-between">
+				<div class="card-title">Clients</div>
+				<div class="d-flex align-items-start">
+					<a href="{% url 'elec_meter:nouveau_client' %}">
+						<span><i class="fa fa-plus"></i>Ajouter un client</span>
+					</a>
+				</div>
+			</div>
+			<div class="card-body">
+				<div class="table-responsive">
+					<table id="datatables" class="table table-striped table-bordered text-nowrap w-100">
+						<thead>
+							<tr>
+								<th class="wd-15p">Nom client</th>
+								<th class="wd-15p">Prenom client</th>
+								<th class="wd-15p">Ville</th>
+								<th class="wd-15p">Quartier</th>
+								<th class="wd-15p">Téléphone</th>
+							</tr>
+						</thead>
+						<tbody>
+						{% for client in clients %}
+							<tr data-href="{% url 'elec_meter:details_client' client.id %}">
+								<td>{{client.nom_client}}</td>
+								<td>{{client.prenom_client}}</td>
+								{% if client.ville_client is None %}
+									<td>Non renseignée</td>
+								{% else %}
+									<td>{{client.ville_client}}</td>
+								{% endif %}
+								{% if client.adresse_client is None %}
+									<td>Non renseignée</td>
+								{% else %}
+									<td>{{client.adresse_client}}</td>
+								{% endif %}
+								<td>{{client.tel_client}}</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<!-- table-wrapper -->
+		</div>
+		<!-- section-wrapper -->
+		</div>
+	</div>
+{% endblock %}
+
+{% block js %}
+	<script src="{% static 'assets/plugins/datatable/js/jquery.dataTables.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.bootstrap4.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/dataTables.buttons.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.bootstrap4.min.js ' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/jszip.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/pdfmake.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/vfs_fonts.js"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.html5.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.print.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/js/buttons.colVis.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/responsive.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'assets/plugins/datatable/datatable-2.js' %}"></script>
+
+	<script>
+		document.addEventListener("DOMContentLoaded",() =>{
+			const rows = document.querySelectorAll("tr[data-href]");
+			rows.forEach(row => {
+				row.addEventListener("click", () => {
+					window.location.href = row.dataset.href;
+				});
+			});
+		});
+	</script>
+{% endblock %}
+
+

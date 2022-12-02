@@ -1,0 +1,41 @@
+{% load static %}
+
+<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+<aside class="app-sidebar toggle-sidebar">
+	<div class="app-sidebar__user">
+		<div class="user-body">
+			<img src="{% static 'assets/images/users/avatars/2.png' %}" alt="profile-user" class="rounded-circle w-25">
+		</div>
+		<div class="user-info">
+			<a href="#" class=""><span class="app-sidebar__user-name font-weight-semibold">{{prenom_client}}</span><br>
+				<span class="text-muted app-sidebar__user-designation text-sm"> Entreprise</span>
+			</a>
+		</div>
+	</div>
+	<ul class="side-menu toggle-menu">
+		<li>
+			<a class="side-menu__item" href="{% url 'elec_meter:client_home' %}"><i class="side-menu__icon typcn typcn-device-desktop hor-icon"></i><span class="side-menu__label">Tableau de bord</span></a>
+		</li>
+		<li class="slide">
+			<a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-th-large-outline"></i><span class="side-menu__label">Gestion du compteur</span><i class="angle fa fa-angle-right"></i></a>
+			<ul class="slide-menu">
+				<li><a href="#" class="slide-item" data-toggle="modal" data-target="#rechargerCompteur"> Ajouter unités</a></li>
+				<li><a href="#" class="slide-item" data-toggle="modal" data-target="#transfertCredit"> Transferer unités</a></li>
+			</ul>
+		</li>
+		<li class="slide">
+			<a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-th-large-outline"></i><span class="side-menu__label">Analyses statistiques</span><i class="angle fa fa-angle-right"></i></a>
+			<ul class="slide-menu">
+				<li><a href="{% url 'elec_meter:client_stat_par_mois' request.session.context.devEUI %}" class="slide-item"> Analyse mensuelle</a></li>
+				<li><a href="cards-image.html" class="slide-item"> Analyse hebdomadaire</a></li>
+			</ul>
+		</li>
+		<li class="slide">
+			<a class="side-menu__item" data-toggle="slide" href="#"><i class="side-menu__icon typcn typcn-th-large-outline"></i><span class="side-menu__label">Configuration</span><i class="angle fa fa-angle-right"></i></a>
+			<ul class="slide-menu">
+				<li><a href="#" class="slide-item"> Configurer compte</a></li>
+				<li><a href="cards-image.html" class="slide-item"> Configurer compteur</a></li>
+			</ul>
+		</li>
+	</ul>
+</aside>
