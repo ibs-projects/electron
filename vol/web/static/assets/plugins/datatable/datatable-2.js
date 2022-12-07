@@ -29,10 +29,10 @@ $(function(e) {
     } );
 	
 	//file export datatable
-	var table = $('#fileexport-datatable').DataTable( {
+	var table = $('#fileexport-datatable').dataTable( {
 		lengthChange: false,
+		dom: 'Bfrtip'
 		buttons: [ 'copy', 'excel', 'pdf', 'colvis' ]
 	} );
-	table.buttons().container()
-		.appendTo( '#fileexport-datatable_wrapper .col-md-6:eq(0)' );
+	table.buttons().container().appendTo( '#fileexport-datatable_wrapper .col-md-6:eq(0)' );
 } );

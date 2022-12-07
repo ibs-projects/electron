@@ -25,7 +25,7 @@ class Client(models.Model):
     est_bloque = models.BooleanField(default=True)
     adresse_client = models.CharField(max_length=200,blank=True,null=True)
     code_client = models.CharField(max_length=20,null=True,blank=True)
-    date_creation = models.DateTimeField(default=timezone.now())
+    date_creation = models.DateTimeField(default=timezone.now)
 
     def generer_code_client(self):
         import string
@@ -151,7 +151,7 @@ class InfoSignal(models.Model):
     data = models.CharField(max_length=100)
     gwid = models.ForeignKey(GWS, on_delete=models.CASCADE, related_name="donnees")
     machine = models.ForeignKey(Machine, on_delete=models.CASCADE, related_name="signaux")
-    date_creation = models.DateTimeField(default=timezone.now())
+    date_creation = models.DateTimeField(default=timezone.now)
     liste_gateways = models.CharField(max_length=200)
 
     def save(self,*args,**kwargs):
@@ -296,7 +296,7 @@ class Abonnement(models.Model):
     point_service = models.CharField(max_length=200, null=True, blank=True)
     lat_machine = models.FloatField(default=0.0)
     lon_machine = models.FloatField(default=0.0)
-    date_creation = models.DateField(default=timezone.now())
+    date_creation = models.DateField(default=timezone.now)
     derniere_modif = models.DateField(auto_now=True)
 
     class Meta:
@@ -450,7 +450,7 @@ class Retrait(models.Model):
     compteur_client = models.ForeignKey(Machine,on_delete=models.CASCADE)
     compteur_trader = models.ForeignKey(Machine,on_delete=models.CASCADE,default=1,related_name="trader")
     montant = models.FloatField(default=0.00)
-    jour_retrait = models.DateField(default=datetime.today())
+    jour_retrait = models.DateField(default=timezone.now)
     heure_retrait = models.TimeField(default=datetime.now().strftime(("%H:%M:%S")))
     etat = models.CharField(max_length=10,null=True,blank=True)
     equivalent_montant_unites = models.FloatField(default=0.00)
